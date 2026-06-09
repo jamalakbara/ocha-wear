@@ -1,0 +1,289 @@
+{%- liquid
+  assign slide_count = section.blocks.size
+  assign autoplay = section.settings.autoplay
+  assign autoplay_speed = section.settings.autoplay_speed
+  assign show_arrows = section.settings.show_arrows
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+
+<section
+  class="duma-hero section section--full-width disable-section-top-offset color-{{ section.settings.color_scheme }}"
+  style="--duma-hero-height-desktop: {{ section.settings.height_desktop }}px;"
+>
+  {%- if slide_count > 1 -%}
+    {%- capture controls -%}
+      {%- render 'slideshow-controls',
+        style: 'dots',
+        autoplay: autoplay,
+        item_count: slide_count,
+        show_arrows: false,
+        controls_on_media: true,
+        pagination_position: 'center',
+        icon_style: 'arrow'
+      -%}
+    {%- endcapture -%}
+
+    <slideshow-component
+      class="duma-hero__slideshow"
+      style="--slide-min-height: var(--duma-hero-height-mobile); --slide-min-height-desktop: var(--duma-hero-height-desktop);"
+      {% if autoplay %}autoplay="{{ autoplay_speed }}" aria-live="polite"{% endif %}
+      initial-slide="0"
+      infinite
+    >
+      <slideshow-container ref="slideshowContainer">
+        {%- if show_arrows -%}
+          {%- render 'slideshow-arrows', icon_style: 'arrow', arrows_position: 'center' -%}
+        {%- endif -%}
+        <slideshow-slides tabindex="-1" ref="scroller">
+          {%- for block in section.blocks -%}
+            {%- assign slide_url = block.settings.link -%}
+            <slideshow-slide class="duma-hero__slide" slide-index="{{ forloop.index0 }}">
+              {%- if slide_url != blank -%}
+                <a class="duma-hero__slide-inner" href="{{ slide_url }}">
+              {%- else -%}
+                <div class="duma-hero__slide-inner">
+              {%- endif -%}
+                {%- render 'duma-hero-slide-media', block: block -%}
+                {%- if block.settings.wordmark != blank -%}
+                  <div class="duma-hero__wordmark-wrap">
+                    <h2 class="duma-hero__wordmark">{{ block.settings.wordmark }}</h2>
+                    {%- if block.settings.subline != blank -%}
+                      <p class="duma-hero__subline">{{ block.settings.subline }}</p>
+                    {%- endif -%}
+                    {%- if block.settings.cta_label != blank -%}
+                      <span class="duma-hero__cta">{{ block.settings.cta_label }}</span>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              {%- if slide_url != blank -%}
+                </a>
+              {%- else -%}
+                </div>
+              {%- endif -%}
+            </slideshow-slide>
+          {%- endfor -%}
+        </slideshow-slides>
+      </slideshow-container>
+      {{ controls }}
+    </slideshow-component>
+    {% render 'slideshow-styles' %}
+  {%- else -%}
+    {%- for block in section.blocks -%}
+      {%- assign slide_url = block.settings.link -%}
+      {%- if slide_url != blank -%}
+        <a class="duma-hero__slide-inner duma-hero__slide-inner--single" href="{{ slide_url }}">
+      {%- else -%}
+        <div class="duma-hero__slide-inner duma-hero__slide-inner--single">
+      {%- endif -%}
+        {%- render 'duma-hero-slide-media', block: block -%}
+        {%- if block.settings.wordmark != blank -%}
+          <div class="duma-hero__wordmark-wrap">
+            <h1 class="duma-hero__wordmark">{{ block.settings.wordmark }}</h1>
+            {%- if block.settings.subline != blank -%}
+              <p class="duma-hero__subline">{{ block.settings.subline }}</p>
+            {%- endif -%}
+            {%- if block.settings.cta_label != blank -%}
+              <span class="duma-hero__cta">{{ block.settings.cta_label }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- if slide_url != blank -%}
+        </a>
+      {%- else -%}
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <div class="duma-hero__slide-inner duma-hero__slide-inner--placeholder">
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'duma-hero__media duma-hero__media--placeholder' }}
+      </div>
+    {%- endfor -%}
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .duma-hero {
+    --duma-hero-height-mobile: 100svh;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  .duma-hero__slideshow {
+    display: block;
+    width: 100%;
+    height: var(--duma-hero-height-mobile);
+  }
+
+  @media screen and (min-width: 750px) {
+    .duma-hero__slideshow {
+      height: var(--duma-hero-height-desktop);
+    }
+  }
+
+  .duma-hero__slide-inner,
+  .duma-hero__slide-inner--single {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: var(--duma-hero-height-mobile);
+    color: #fff;
+    text-decoration: none;
+    overflow: hidden;
+  }
+
+  @media screen and (min-width: 750px) {
+    .duma-hero__slide-inner,
+    .duma-hero__slide-inner--single {
+      height: var(--duma-hero-height-desktop);
+    }
+  }
+
+  .duma-hero__media,
+  .duma-hero__media-mobile,
+  .duma-hero__media-desktop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .duma-hero__media-mobile { display: block; }
+  .duma-hero__media-desktop { display: none; }
+
+  @media screen and (min-width: 750px) {
+    .duma-hero__media-mobile { display: none; }
+    .duma-hero__media-desktop { display: block; }
+  }
+
+  .duma-hero__media-only {
+    display: block;
+  }
+
+  .duma-hero__wordmark-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    text-align: center;
+    padding: 0 1.5rem;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .duma-hero__wordmark {
+    margin: 0;
+    color: #fff;
+    font-family: var(--font-duma-display, var(--font-heading--family));
+    font-weight: 400;
+    font-style: normal;
+    font-size: clamp(3rem, 9vw, 7.5rem);
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .duma-hero__subline {
+    margin: 0;
+    color: #fff;
+    font-family: var(--font-duma-section, var(--font-subheading--family));
+    font-size: clamp(0.875rem, 1.2vw, 1.125rem);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .duma-hero__cta {
+    margin-top: 0.5rem;
+    color: #fff;
+    font-family: var(--font-duma-ui, var(--font-body--family));
+    font-size: 0.8125rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #fff;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DUMA Hero",
+  "class": "container-background-image",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "_duma-hero-slide"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "range",
+      "id": "height_desktop",
+      "label": "Desktop height",
+      "min": 480,
+      "max": 1000,
+      "step": 8,
+      "unit": "px",
+      "default": 808
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-6"
+    },
+    {
+      "type": "header",
+      "content": "Slideshow"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto-rotate slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Rotate every",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5,
+      "visible_if": "{{ section.settings.autoplay }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show arrows",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "DUMA Hero",
+      "category": "t:categories.banners",
+      "settings": {},
+      "blocks": {
+        "slide_1": {
+          "type": "_duma-hero-slide",
+          "settings": {
+            "wordmark": "ocha wear",
+            "subline": "OUT NOW"
+          }
+        }
+      },
+      "block_order": ["slide_1"]
+    }
+  ]
+}
+{% endschema %}

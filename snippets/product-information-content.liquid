@@ -10,6 +10,7 @@
   @param {string} media_gallery - Captured HTML for the product media gallery block
   @param {string} product_details - Captured HTML for the product details block
   @param {string} additional_blocks - Captured HTML for additional section blocks
+  @param {string} [thumbnail_rail] - Optional captured HTML for a sticky thumbnail rail rendered before the media column
 
   @example
   {% capture media_gallery %}
@@ -67,6 +68,15 @@
     endif
   endif
 
+  assign has_thumbnail_rail = false
+  if thumbnail_rail and thumbnail_rail != blank
+    assign trimmed_rail = thumbnail_rail | strip
+    if trimmed_rail != ''
+      assign has_thumbnail_rail = true
+      assign product_grid_class = product_grid_class | append: ' product-information__grid--with-rail'
+    endif
+  endif
+
   # Determine content width
   case settings.content_width
     when 'content-center-aligned'
@@ -99,6 +109,12 @@
         {{ media_gallery }}
       </div>
     {% endcapture %}
+
+    {% if has_thumbnail_rail %}
+      <div class="product-information__thumb-rail" data-testid="product-information-thumb-rail">
+        {{ thumbnail_rail }}
+      </div>
+    {% endif %}
 
     {% for block in render_order_array %}
       {% if block == 'media' and product_has_media %}
@@ -313,5 +329,35 @@
   /* If the header is sticky, make product details content stick underneath the header */
   body:has(#header-group #header-component[data-sticky-state='active']) .product-details.sticky-content--desktop {
     --sticky-header-offset: var(--header-height);
+  }
+
+  /* PDP — sticky thumbnail rail (editorial 3-zone layout) */
+  .product-information__thumb-rail {
+    display: none;
+  }
+
+  @media screen and (min-width: 1200px) {
+    .product-information__grid--with-rail {
+      grid-template-columns: 80px 2fr 1fr;
+      column-gap: 24px;
+    }
+
+    .product-information__grid--with-rail .product-information__thumb-rail {
+      display: block;
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .product-information__grid--with-rail .product-information__media {
+      grid-column: 2;
+      grid-row: 1;
+      padding-right: 0;
+    }
+
+    .product-information__grid--with-rail .product-details {
+      grid-column: 3;
+      grid-row: 1;
+      padding-left: 0;
+    }
   }
 {% endstylesheet %}

@@ -472,6 +472,31 @@
 
     z-index: var(--layer-overlay);
 
+    /* Scrim under floating header so text stays legible over any hero */
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: calc(var(--header-height) * 1.6);
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.45),
+        rgba(0, 0, 0, 0.15) 60%,
+        rgba(0, 0, 0, 0)
+      );
+      pointer-events: none;
+      z-index: var(--layer-lowest);
+      opacity: 1;
+      transition: opacity var(--animation-speed) var(--animation-easing);
+    }
+
+    /* Hide scrim once header becomes solid (sticky-active or hover-revealed) */
+    &[data-sticky-state='active']::before,
+    &:hover::before,
+    &:focus-within::before {
+      opacity: 0;
+    }
+
     &[transparent='not-sticky'][data-sticky-state='active'],
     &:has(.menu-list__link:not([aria-haspopup]):hover) {
       --header-logo-display: unset;

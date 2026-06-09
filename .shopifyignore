@@ -1,0 +1,17 @@
+# Editor / atomic-write artifacts
+*.tmp
+*.tmp.*
+*.swp
+*.swo
+*~
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Docs
+docs/
+
+# Local notes
+*.bak

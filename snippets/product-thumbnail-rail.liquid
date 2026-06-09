@@ -1,0 +1,50 @@
+{% doc %}
+  Product Thumbnail Rail
+
+  Sticky vertical column of media thumbnails on the PDP. Clicking a thumb
+  smooth-scrolls the matching `.product-media[data-media-id]` slide into view.
+
+  @param {object} product - The product whose media to render
+  @param {string} section_id - Owning section id (used by JS to scope queries)
+
+  @example
+  {% render 'product-thumbnail-rail', product: closest.product, section_id: section.id %}
+{% enddoc %}
+
+{%- if product == blank or product.media.size <= 1 -%}
+{%- else -%}
+  <product-thumb-rail
+    class="product-thumb-rail"
+    data-section-id="{{ section_id }}"
+    aria-label="Product images"
+  >
+    {%- for media in product.media -%}
+      {%- assign is_video = false -%}
+      {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+        {%- assign is_video = true -%}
+      {%- endif -%}
+      {%- assign thumb_alt = media.preview_image.alt | default: product.title | escape -%}
+      <button
+        type="button"
+        class="product-thumb-rail__item{% if forloop.first %} is-active{% endif %}"
+        data-target-media-id="{{ media.id }}"
+        aria-label="Show image {{ forloop.index }} of {{ product.media.size }}"
+      >
+        {%- if media.preview_image -%}
+          {{
+            media.preview_image
+            | image_url: width: 160
+            | image_tag: loading: 'lazy', width: 80, height: 100, alt: thumb_alt, class: 'product-thumb-rail__image'
+          }}
+        {%- endif -%}
+        {%- if is_video -%}
+          <span class="product-thumb-rail__play" aria-hidden="true">
+            <svg viewBox="0 0 12 12" width="12" height="12" fill="currentColor">
+              <path d="M3 1.5 10 6 3 10.5Z" />
+            </svg>
+          </span>
+        {%- endif -%}
+      </button>
+    {%- endfor -%}
+  </product-thumb-rail>
+{%- endif -%}

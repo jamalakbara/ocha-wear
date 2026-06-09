@@ -1,0 +1,40 @@
+{% comment %}
+  Optional custom DUMA font faces.
+  Drop the licensed .woff2 files into assets/ — browser uses them if present,
+  otherwise falls back to the Shopify-library serif (Cormorant / Cormorant Garamond)
+  or sans-serif (Work Sans) chosen in theme settings.
+{% endcomment %}
+
+{% # theme-check-disable MissingAsset %}
+{% style %}
+  @font-face {
+    font-family: 'Theseasons';
+    src: url('{{ 'theseasons.woff2' | asset_url }}') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Cinemasunday';
+    src: url('{{ 'cinemasunday.woff2' | asset_url }}') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Work Sans Variable';
+    src: url('{{ 'work-sans-variable.woff2' | asset_url }}') format('woff2-variations');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
+    --font-duma-display: 'Theseasons', var(--font-heading--family);
+    --font-duma-section: 'Cinemasunday', var(--font-subheading--family);
+    --font-duma-ui: 'Work Sans Variable', var(--font-body--family);
+  }
+{% endstyle %}
+{% # theme-check-enable MissingAsset %}

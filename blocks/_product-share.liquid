@@ -1,0 +1,85 @@
+{% liquid
+  assign product = closest.product
+  assign share_url = shop.url | append: product.url
+  assign share_title = product.title | default: shop.name | url_encode
+  assign share_image = ''
+  if product.featured_image
+    assign share_image = product.featured_image | image_url: width: 1200 | url_encode
+  endif
+%}
+
+<div class="product-share" {{ block.shopify_attributes }}>
+  <span class="product-share__label">Share</span>
+  <a
+    class="product-share__link"
+    href="https://www.facebook.com/sharer/sharer.php?u={{ share_url | url_encode }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Share on Facebook"
+  >
+    {% render 'icon', icon: 'facebook' %}
+  </a>
+  <a
+    class="product-share__link"
+    href="https://twitter.com/intent/tweet?url={{ share_url | url_encode }}&text={{ share_title }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Share on Twitter"
+  >
+    {% render 'icon', icon: 'twitter' %}
+  </a>
+  <a
+    class="product-share__link"
+    href="https://pinterest.com/pin/create/button/?url={{ share_url | url_encode }}&media={{ share_image }}&description={{ share_title }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Share on Pinterest"
+  >
+    {% render 'icon', icon: 'pinterest' %}
+  </a>
+</div>
+
+{% stylesheet %}
+  .product-share {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #666;
+    font-family: var(--font-duma-ui, var(--font-body--family));
+    font-size: 13px;
+    padding-block-start: 12px;
+  }
+
+  .product-share__label {
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+
+  .product-share__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    color: #666;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .product-share__link:hover {
+    color: #111;
+  }
+
+  .product-share__link .icon {
+    width: 16px;
+    height: 16px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product share",
+  "tag": null,
+  "settings": []
+}
+{% endschema %}

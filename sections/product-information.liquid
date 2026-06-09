@@ -167,14 +167,36 @@
   </sticky-add-to-cart>
 {% endif %}
 
+{% capture thumbnail_rail %}
+  {% if section.settings.enable_thumbnail_rail and closest.product.media.size > 1 %}
+    {% render 'product-thumbnail-rail', product: closest.product, section_id: section.id %}
+  {% endif %}
+{% endcapture %}
+
 {% render 'product-information-content',
   product_media_size: closest.product.media.size,
   section_id: section.id,
   settings: section.settings,
   media_gallery: media_gallery,
   product_details: product_details,
-  additional_blocks: additional_blocks
+  additional_blocks: additional_blocks,
+  thumbnail_rail: thumbnail_rail
 %}
+
+{% if section.settings.enable_thumbnail_rail and closest.product.media.size > 1 %}
+  <script src="{{ 'product-thumb-rail.js' | asset_url }}" type="module"></script>
+{% endif %}
+
+{% if request.page_type == 'product' %}
+  <script type="module">
+    import { RecentlyViewed } from {{ 'recently-viewed-products.js' | asset_url | json }};
+    RecentlyViewed.addProduct({
+      id: {{ closest.product.id | json }},
+      handle: {{ closest.product.handle | json }},
+      title: {{ closest.product.title | json }}
+    });
+  </script>
+{% endif %}
 
 {% stylesheet %}
   .sticky-add-to-cart__bar {
@@ -437,6 +459,13 @@
       "id": "enable_sticky_add_to_cart",
       "label": "t:settings.enable_sticky_add_to_cart",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_thumbnail_rail",
+      "label": "Enable sticky thumbnail rail (PDP)",
+      "info": "Editorial 3-zone layout: thumb rail + stacked gallery + sticky info.",
+      "default": false
     },
     {
       "type": "color_scheme",

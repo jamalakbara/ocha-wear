@@ -1,0 +1,55 @@
+{%- doc -%}
+  Renders the desktop + mobile (1:1) images for a DUMA hero slide.
+
+  @param {object} block - the _duma-hero-slide block
+{%- enddoc -%}
+
+{%- liquid
+  assign img_desktop = block.settings.image
+  assign img_mobile = block.settings.image_mobile
+-%}
+
+{%- if img_desktop != blank -%}
+  <img
+    class="duma-hero__media duma-hero__media-desktop"
+    src="{{ img_desktop | image_url: width: 2880 }}"
+    srcset="
+      {{ img_desktop | image_url: width: 1440 }} 1440w,
+      {{ img_desktop | image_url: width: 2160 }} 2160w,
+      {{ img_desktop | image_url: width: 2880 }} 2880w
+    "
+    sizes="100vw"
+    alt="{{ img_desktop.alt | escape }}"
+    loading="lazy"
+    width="{{ img_desktop.width }}"
+    height="{{ img_desktop.height }}"
+  >
+{%- endif -%}
+
+{%- if img_mobile != blank -%}
+  <img
+    class="duma-hero__media duma-hero__media-mobile"
+    src="{{ img_mobile | image_url: width: 1200 }}"
+    srcset="
+      {{ img_mobile | image_url: width: 600 }} 600w,
+      {{ img_mobile | image_url: width: 900 }} 900w,
+      {{ img_mobile | image_url: width: 1200 }} 1200w
+    "
+    sizes="100vw"
+    alt="{{ img_mobile.alt | escape }}"
+    loading="lazy"
+    width="{{ img_mobile.width }}"
+    height="{{ img_mobile.height }}"
+  >
+{%- elsif img_desktop != blank -%}
+  <img
+    class="duma-hero__media duma-hero__media-mobile"
+    src="{{ img_desktop | image_url: width: 1200 }}"
+    alt="{{ img_desktop.alt | escape }}"
+    loading="lazy"
+    width="{{ img_desktop.width }}"
+    height="{{ img_desktop.height }}"
+  >
+{%- elsif img_mobile == blank and img_desktop == blank -%}
+  {{ 'lifestyle-1' | placeholder_svg_tag: 'duma-hero__media duma-hero__media-only' }}
+{%- endif -%}

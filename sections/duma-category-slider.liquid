@@ -1,0 +1,242 @@
+{%- liquid
+  assign tile_count = section.blocks.size
+  assign mobile_cols = section.settings.mobile_columns
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+
+<section
+  class="duma-category section section--full-width color-{{ section.settings.color_scheme }}"
+  style="--duma-category-height: {{ section.settings.tile_height }}px; --duma-category-mobile-cols: {{ mobile_cols }};"
+>
+  {%- if section.settings.heading != blank -%}
+    <h2 class="duma-category__heading">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+
+  <div class="duma-category__grid" data-tile-count="{{ tile_count }}">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign tile_url = block.settings.link
+      -%}
+      {%- if tile_url != blank -%}
+        <a class="duma-category__tile" href="{{ tile_url }}" {{ block.shopify_attributes }}>
+      {%- else -%}
+        <div class="duma-category__tile" {{ block.shopify_attributes }}>
+      {%- endif -%}
+        {%- if block.settings.image != blank -%}
+          <img
+            class="duma-category__image"
+            src="{{ block.settings.image | image_url: width: 1200 }}"
+            srcset="
+              {{ block.settings.image | image_url: width: 480 }} 480w,
+              {{ block.settings.image | image_url: width: 800 }} 800w,
+              {{ block.settings.image | image_url: width: 1200 }} 1200w
+            "
+            sizes="(min-width: 750px) 25vw, 100vw"
+            alt="{{ block.settings.image.alt | escape }}"
+            loading="lazy"
+            width="{{ block.settings.image.width }}"
+            height="{{ block.settings.image.height }}"
+          >
+        {%- else -%}
+          {{ 'collection-1' | placeholder_svg_tag: 'duma-category__image' }}
+        {%- endif -%}
+        <div class="duma-category__label-wrap">
+          {%- if block.settings.label != blank -%}
+            <span class="duma-category__label">{{ block.settings.label }}</span>
+          {%- endif -%}
+          {%- if block.settings.cta_label != blank -%}
+            <span class="duma-category__cta">{{ block.settings.cta_label }}</span>
+          {%- endif -%}
+        </div>
+      {%- if tile_url != blank -%}
+        </a>
+      {%- else -%}
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      {%- for i in (1..4) -%}
+        <div class="duma-category__tile">
+          {{ 'collection-1' | placeholder_svg_tag: 'duma-category__image' }}
+          <div class="duma-category__label-wrap">
+            <span class="duma-category__label">CATEGORY {{ i }}</span>
+            <span class="duma-category__cta">SHOP NOW &rarr;</span>
+          </div>
+        </div>
+      {%- endfor -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .duma-category {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .duma-category__heading {
+    margin: 0;
+    padding: 2rem 1rem 1rem;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: var(--font-duma-section, var(--font-subheading--family));
+    font-size: 1.25rem;
+    letter-spacing: 0.15em;
+    color: var(--color-foreground-heading);
+  }
+
+  .duma-category__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--duma-category-mobile-cols, 1), 1fr);
+    gap: 0;
+    width: 100%;
+  }
+
+  @media screen and (min-width: 750px) {
+    .duma-category__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .duma-category__tile {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: var(--duma-category-height);
+    overflow: hidden;
+    color: #fff;
+    text-decoration: none;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .duma-category__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease-out-quad, ease-out);
+  }
+
+  .duma-category__tile:hover .duma-category__image {
+    transform: scale(1.03);
+  }
+
+  .duma-category__label-wrap {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding: 1.25rem 1.5rem;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .duma-category__label {
+    color: #fff;
+    font-family: var(--font-duma-ui, var(--font-body--family));
+    font-size: 1.0625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .duma-category__cta {
+    color: #fff;
+    font-family: var(--font-duma-ui, var(--font-body--family));
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DUMA Category Grid",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "_duma-category-tile"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "info": "Optional. Leave blank for image-only grid."
+    },
+    {
+      "type": "range",
+      "id": "tile_height",
+      "label": "Tile height",
+      "min": 320,
+      "max": 800,
+      "step": 5,
+      "unit": "px",
+      "default": 495
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Mobile columns",
+      "options": [
+        { "value": "1", "label": "1 (stacked)" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "DUMA Category Grid",
+      "category": "t:categories.collection_list",
+      "settings": {},
+      "blocks": {
+        "tile_1": {
+          "type": "_duma-category-tile",
+          "settings": {
+            "label": "OUTERWEARS",
+            "cta_label": "SHOP NOW →"
+          }
+        },
+        "tile_2": {
+          "type": "_duma-category-tile",
+          "settings": {
+            "label": "DRESSES",
+            "cta_label": "SHOP NOW →"
+          }
+        },
+        "tile_3": {
+          "type": "_duma-category-tile",
+          "settings": {
+            "label": "BOTTOMS",
+            "cta_label": "SHOP NOW →"
+          }
+        },
+        "tile_4": {
+          "type": "_duma-category-tile",
+          "settings": {
+            "label": "TOPS",
+            "cta_label": "SHOP NOW →"
+          }
+        }
+      },
+      "block_order": ["tile_1", "tile_2", "tile_3", "tile_4"]
+    }
+  ]
+}
+{% endschema %}

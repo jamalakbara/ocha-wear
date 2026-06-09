@@ -1,0 +1,205 @@
+/*
+ * DUMA-style polish layered on top of Atelier.
+ * Scoped narrowly so it can be turned off by removing the asset link.
+ */
+
+/* ---------- 1. SALE nav item — red ---------- */
+.menu a[href*="sale" i],
+.menu__link[href*="sale" i],
+nav a[href*="sale" i] {
+  color: var(--duma-sale-red, #c8232c);
+}
+
+/* ---------- 2. Square corners everywhere ---------- */
+body,
+body * {
+  --style-border-radius-pills: 0;
+  --style-border-radius-inputs: 0;
+  --style-border-radius-buttons-primary: 0;
+  --style-border-radius-buttons-secondary: 0;
+  --style-border-radius-popover: 0;
+  --border-radius-sm: 0;
+}
+
+/* ---------- 3. Image fade-in helper ---------- */
+.image--fade-in {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.image--fade-in.loaded,
+.image--fade-in[data-loaded='true'] {
+  opacity: 1;
+}
+
+/* ---------- 4. Product card hover crossfade ----------
+   Reveals the 2nd product image on hover.
+   Works whether the card-gallery renders as a slideshow (Atelier default)
+   or as stacked imgs.
+*/
+product-card .card-gallery slideshow-slide {
+  transition: opacity 0.3s ease;
+}
+
+product-card:hover .card-gallery slideshow-slide[slide-index='0'] {
+  opacity: 0;
+}
+
+product-card:hover .card-gallery slideshow-slide[slide-index='1'] {
+  opacity: 1;
+}
+
+/* fallback when only one image: keep first slide visible on hover */
+product-card .card-gallery:not(:has(slideshow-slide[slide-index='1'])) slideshow-slide[slide-index='0'] {
+  opacity: 1 !important;
+}
+
+/* ---------- 5. Announcement bar — tight 43px feel ---------- */
+.announcement-bar {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  letter-spacing: 0.04em;
+  min-height: 43px;
+}
+
+/* ---------- 6. Newsletter subscribe button — taupe ---------- */
+.email-signup__button:not(.button-unstyled) {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+footer .email-signup__button:not(.button-unstyled) {
+  background-color: #c9bfb5;
+  color: #5f3e22;
+  border-color: #c9bfb5;
+  letter-spacing: 0.2em;
+  padding: 14px 28px;
+}
+
+footer .email-signup__button:not(.button-unstyled):hover {
+  background-color: #b8ada0;
+  color: #5f3e22;
+}
+
+footer .email-signup__input--underline {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  letter-spacing: 0.04em;
+}
+
+/* ---------- 7. Section headings — display serif look ---------- */
+.section-heading--duma,
+.product-list__heading,
+.featured-collection__heading {
+  font-family: var(--font-duma-section, var(--font-subheading--family));
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--color-foreground-heading);
+}
+
+/* ---------- 8. No section gap on home (full-bleed stack) ---------- */
+body.template-index .section {
+  margin-block: 0;
+}
+
+/* ---------- 9. PDP — editorial catalog layout ---------- */
+.template-product .product-information .product-details {
+  --color-foreground: #454545;
+  color: #454545;
+}
+
+/* Sticky info column under sticky header */
+.template-product .product-details.sticky-content--desktop {
+  --sticky-header-offset: 90px;
+}
+
+@media screen and (min-width: 750px) {
+  .template-product .product-details.sticky-content--desktop > .group-block {
+    position: sticky;
+    top: calc(var(--sticky-header-offset, 90px));
+  }
+}
+
+/* Vendor / title / price typographic accents */
+.template-product .product-details h1,
+.template-product .product-details .product-title {
+  font-family: var(--font-duma-section, var(--font-subheading--family));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #454545;
+}
+
+/* Accordion summary — underlined serif uppercase per DUMA spec */
+.template-product .product-details .accordion .details__header {
+  font-family: var(--font-duma-section, var(--font-subheading--family));
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  letter-spacing: 0.06em;
+  padding-block: 18px;
+  color: #454545;
+}
+
+.template-product .product-details .accordion .details-content {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  color: #454545;
+}
+
+.template-product .product-details .accordion {
+  --color-border: #e3e3e3;
+}
+
+/* Sticky thumbnail rail */
+.product-thumb-rail {
+  position: sticky;
+  top: 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 80px;
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.product-thumb-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.product-thumb-rail__item {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  padding: 0;
+  background: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.15s ease, opacity 0.15s ease;
+  opacity: 0.6;
+}
+
+.product-thumb-rail__item:hover,
+.product-thumb-rail__item:focus-visible {
+  opacity: 1;
+}
+
+.product-thumb-rail__item.is-active {
+  border-color: #454545;
+  opacity: 1;
+}
+
+.product-thumb-rail__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.product-thumb-rail__play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
