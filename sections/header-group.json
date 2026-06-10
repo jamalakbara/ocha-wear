@@ -19,39 +19,24 @@
           "settings": {
             "text": "Out Now — Poème | Free Shipping Nationwide*",
             "link": "",
-            "text_alignment": "center",
-            "width": "fill",
-            "max_width": "normal",
-            "alignment": "center",
-            "type_preset": "paragraph",
             "font": "var(--font-body--family)",
             "font_size": "0.9375rem",
-            "line_height": "normal",
             "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground)",
-            "background": false,
-            "background_color": "#00000000",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
+            "case": "none"
           },
           "blocks": {}
         }
       },
-      "block_order": ["announcement_default"],
+      "block_order": [
+        "announcement_default"
+      ],
       "settings": {
+        "speed": 5,
         "section_width": "full-width",
         "color_scheme": "scheme-3",
-        "speed": 5,
         "divider_width": 0,
         "padding-block-start": 12,
-        "padding-block-end": 12,
-        "padding-inline-start": 16,
-        "padding-inline-end": 16
+        "padding-block-end": 12
       }
     },
     "header_section": {
@@ -63,9 +48,7 @@
           "settings": {
             "hide_logo_on_home_page": false,
             "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
+            "padding-block-end": 0
           },
           "blocks": {}
         },

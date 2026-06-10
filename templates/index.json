@@ -12,18 +12,29 @@
     "duma_hero": {
       "type": "duma-hero",
       "blocks": {
+        "duma_hero_slide_fpVkXD": {
+          "type": "duma-hero-slide",
+          "settings": {
+            "image": "shopify://shop_images/look-studio-1bRwJhXhugM-unsplash_2.jpg",
+            "wordmark": "SUMMER BLOOM",
+            "subline": "",
+            "cta_label": "SHOP NOW",
+            "link": "shopify://collections/all"
+          }
+        },
         "slide_1": {
           "type": "duma-hero-slide",
           "settings": {
-            "wordmark": "Poème",
+            "image": "shopify://shop_images/look-studio-qG96I-vRLtM-unsplash_1.jpg",
+            "wordmark": "Denver",
             "subline": "OUT NOW — NEW ARRIVALS",
             "cta_label": "SHOP NOW",
-            "link": "shopify://collections/all"
-          },
-          "blocks": {}
+            "link": "shopify://collections/new-arrivals"
+          }
         }
       },
       "block_order": [
+        "duma_hero_slide_fpVkXD",
         "slide_1"
       ],
       "settings": {
@@ -43,8 +54,7 @@
             "label": "OUTERWEARS",
             "cta_label": "SHOP NOW →",
             "link": "shopify://collections/all"
-          },
-          "blocks": {}
+          }
         },
         "tile_dresses": {
           "type": "category_tile",
@@ -52,8 +62,7 @@
             "label": "DRESSES",
             "cta_label": "SHOP NOW →",
             "link": "shopify://collections/all"
-          },
-          "blocks": {}
+          }
         },
         "tile_bottoms": {
           "type": "category_tile",
@@ -61,8 +70,7 @@
             "label": "BOTTOMS",
             "cta_label": "SHOP NOW →",
             "link": "shopify://collections/all"
-          },
-          "blocks": {}
+          }
         },
         "tile_tops": {
           "type": "category_tile",
@@ -70,8 +78,7 @@
             "label": "TOPS",
             "cta_label": "SHOP NOW →",
             "link": "shopify://collections/all"
-          },
-          "blocks": {}
+          }
         }
       },
       "block_order": [
@@ -126,6 +133,7 @@
       "type": "duma-lookbook",
       "settings": {
         "caption": "Inside the ocha Atelier",
+        "link": "",
         "height_desktop": 650,
         "color_scheme": "scheme-1"
       }
@@ -361,11 +369,16 @@
             "open_in_new_tab": false,
             "style_class": "button",
             "width": "fit-content",
-            "width_mobile": "fit-content"
-          }
+            "custom_width": 100,
+            "width_mobile": "fit-content",
+            "custom_width_mobile": 100
+          },
+          "blocks": {}
         }
       },
-      "block_order": ["banner_cta"],
+      "block_order": [
+        "banner_cta"
+      ],
       "settings": {
         "media_type_1": "image",
         "media_type_2": "image",
