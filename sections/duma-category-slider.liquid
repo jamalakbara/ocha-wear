@@ -200,9 +200,36 @@
   "tag": "section",
   "blocks": [
     {
-      "type": "_duma-category-tile"
+      "type": "category_tile",
+      "name": "Category tile",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Vertical/portrait photo recommended."
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "CATEGORY"
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "Sublink label",
+          "default": "SHOP NOW →"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
     }
   ],
+  "max_blocks": 12,
   "disabled_on": {
     "groups": ["header", "footer"]
   },
@@ -258,28 +285,28 @@
       "settings": {},
       "blocks": {
         "tile_1": {
-          "type": "_duma-category-tile",
+          "type": "category_tile",
           "settings": {
             "label": "OUTERWEARS",
             "cta_label": "SHOP NOW →"
           }
         },
         "tile_2": {
-          "type": "_duma-category-tile",
+          "type": "category_tile",
           "settings": {
             "label": "DRESSES",
             "cta_label": "SHOP NOW →"
           }
         },
         "tile_3": {
-          "type": "_duma-category-tile",
+          "type": "category_tile",
           "settings": {
             "label": "BOTTOMS",
             "cta_label": "SHOP NOW →"
           }
         },
         "tile_4": {
-          "type": "_duma-category-tile",
+          "type": "category_tile",
           "settings": {
             "label": "TOPS",
             "cta_label": "SHOP NOW →"

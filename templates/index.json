@@ -38,7 +38,7 @@
       "type": "duma-category-slider",
       "blocks": {
         "tile_outerwears": {
-          "type": "_duma-category-tile",
+          "type": "category_tile",
           "settings": {
             "label": "OUTERWEARS",
             "cta_label": "SHOP NOW →",
@@ -47,7 +47,7 @@
           "blocks": {}
         },
         "tile_dresses": {
-          "type": "_duma-category-tile",
+          "type": "category_tile",
           "settings": {
             "label": "DRESSES",
             "cta_label": "SHOP NOW →",
@@ -56,7 +56,7 @@
           "blocks": {}
         },
         "tile_bottoms": {
-          "type": "_duma-category-tile",
+          "type": "category_tile",
           "settings": {
             "label": "BOTTOMS",
             "cta_label": "SHOP NOW →",
@@ -65,7 +65,7 @@
           "blocks": {}
         },
         "tile_tops": {
-          "type": "_duma-category-tile",
+          "type": "category_tile",
           "settings": {
             "label": "TOPS",
             "cta_label": "SHOP NOW →",
