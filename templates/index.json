@@ -100,8 +100,45 @@
         "color_scheme": "scheme-1"
       }
     },
+    "duma_category_slider_V3FxbW": {
+      "type": "duma-category-slider",
+      "blocks": {
+        "category_tile_JYybhA": {
+          "type": "category_tile",
+          "settings": {
+            "image": "shopify://shop_images/jovs-beauty-w_lcJNGfvnw-unsplash.jpg",
+            "label": "",
+            "cta_label": "",
+            "link": "shopify://collections/new-arrivals"
+          }
+        },
+        "category_tile_3mgfY9": {
+          "type": "category_tile",
+          "settings": {
+            "image": "shopify://shop_images/ali-pazani-G3fW1KICZco-unsplash.jpg",
+            "label": "",
+            "cta_label": "",
+            "link": "shopify://collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "category_tile_JYybhA",
+        "category_tile_3mgfY9"
+      ],
+      "name": "DUMA Category Grid",
+      "settings": {
+        "heading": "",
+        "intro_label": "",
+        "intro_link": "",
+        "tile_height": 495,
+        "mobile_columns": "2",
+        "color_scheme": ""
+      }
+    },
     "hero_two_up": {
       "type": "hero",
+      "disabled": true,
       "settings": {
         "media_type_1": "image",
         "media_type_2": "image",
@@ -168,6 +205,7 @@
   "order": [
     "duma_hero",
     "duma_category_slider",
+    "duma_category_slider_V3FxbW",
     "hero_two_up",
     "duma_lookbook",
     "our_picks",
