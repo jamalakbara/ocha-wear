@@ -38,11 +38,15 @@
         "slide_1"
       ],
       "settings": {
+        "desktop_height": "full",
         "min_height": 660,
         "color_scheme": "scheme-6",
         "autoplay": true,
         "autoplay_speed": 6,
-        "show_dots": true
+        "show_dots": true,
+        "custom_spacing": false,
+        "space_above": 0,
+        "space_below": 0
       }
     },
     "discover_now": {
@@ -51,7 +55,10 @@
         "label": "Discover Now",
         "link": "shopify://collections/all",
         "alignment": "center",
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-1",
+        "custom_spacing": true,
+        "space_above": 0,
+        "space_below": 0
       }
     },
     "duma_category_slider": {
@@ -105,7 +112,10 @@
         "desktop_columns": "4",
         "tile_height": 495,
         "mobile_columns": "2",
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-1",
+        "custom_spacing": true,
+        "space_above": 0,
+        "space_below": 0
       }
     },
     "duma_category_slider_V3FxbW": {
@@ -140,7 +150,10 @@
         "desktop_columns": "2",
         "tile_height": 495,
         "mobile_columns": "2",
-        "color_scheme": ""
+        "color_scheme": "",
+        "custom_spacing": false,
+        "space_above": 0,
+        "space_below": 0
       }
     },
     "hero_two_up": {
@@ -181,21 +194,29 @@
       "type": "duma-lookbook",
       "settings": {
         "image": "shopify://shop_images/artur-voznenko-7fd_Lai1lwU-unsplash.jpg",
+        "full_width": false,
         "caption": "Inside the ocha Atelier",
         "link": "",
         "height_desktop": 650,
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-1",
+        "custom_spacing": false,
+        "space_above": 0,
+        "space_below": 0
       }
     },
     "our_picks": {
       "type": "duma-our-picks",
       "settings": {
         "heading": "Our Picks",
+        "source": "collection",
         "collection": "all",
         "max_products": 12,
         "foot_label": "View All Products",
         "foot_link": "shopify://collections/all",
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-1",
+        "custom_spacing": false,
+        "space_above": 0,
+        "space_below": 0
       }
     },
     "lifestyle_banner": {
@@ -205,7 +226,10 @@
         "cta_label": "",
         "cta_link": "shopify://collections/all",
         "height": 720,
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-1",
+        "custom_spacing": false,
+        "space_above": 0,
+        "space_below": 0
       }
     }
   },
