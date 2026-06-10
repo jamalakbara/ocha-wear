@@ -149,7 +149,7 @@
         "heading": "Our Picks",
         "collection": "all",
         "max_products": 12,
-        "foot_label": "View All Products →",
+        "foot_label": "View All Products",
         "foot_link": "shopify://collections/all",
         "color_scheme": "scheme-1"
       }
