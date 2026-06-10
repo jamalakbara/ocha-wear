@@ -1383,6 +1383,22 @@
     ]
   },
   {
+    "name": "DUMA Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "section_gap",
+        "label": "Homepage section gap",
+        "info": "Vertical space between homepage sections. Individual sections can override this in their own settings.",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "default": 48
+      }
+    ]
+  },
+  {
     "name": "t:names.animations",
     "settings": [
       {

@@ -35,6 +35,7 @@
 -%}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+{%- render 'duma-section-spacing', section: section -%}
 
 <section
   class="duma-picks section section--full-width color-{{ section.settings.color_scheme }}"
@@ -136,6 +137,16 @@
   .duma-picks__track.is-dragging {
     cursor: grabbing;
     scroll-behavior: auto;
+  }
+
+  /* All products fit in the viewport — no carousel needed */
+  .duma-picks--static .duma-picks__track {
+    justify-content: center;
+    cursor: default;
+  }
+
+  .duma-picks--static .duma-picks__arrow {
+    display: none;
   }
 
   .duma-pick {
@@ -319,6 +330,10 @@
     if (prev) prev.addEventListener('click', function () { track.scrollBy({ left: -step() * 2, behavior: 'smooth' }); });
 
     function updateArrows() {
+      // No overflow: drop carousel affordances and center the cards.
+      var isStatic = track.scrollWidth <= track.clientWidth + 1;
+      root.classList.toggle('duma-picks--static', isStatic);
+      if (isStatic) return;
       if (prev) prev.classList.toggle('is-hidden', track.scrollLeft < 8);
       if (next) next.classList.toggle('is-hidden', track.scrollLeft > track.scrollWidth - track.clientWidth - 8);
     }
@@ -480,6 +495,39 @@
       "id": "color_scheme",
       "label": "Color scheme",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_spacing",
+      "label": "Override theme section gap",
+      "info": "Default gap comes from Theme settings > DUMA Layout.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "space_above",
+      "label": "Space above",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ section.settings.custom_spacing }}"
+    },
+    {
+      "type": "range",
+      "id": "space_below",
+      "label": "Space below",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ section.settings.custom_spacing }}"
     }
   ],
   "presets": [

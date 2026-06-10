@@ -6,6 +6,7 @@
 -%}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+{%- render 'duma-section-spacing', section: section -%}
 
 {%- if cta_link != blank -%}
   <a class="duma-atelier section section--full-width" href="{{ cta_link }}" style="--duma-atelier-height: {{ section.settings.height }}px;">
@@ -131,13 +132,14 @@
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Desktop image"
+      "label": "Desktop image",
+      "info": "Recommended: 2880 × 1440px (landscape)."
     },
     {
       "type": "image_picker",
       "id": "image_mobile",
       "label": "Mobile image",
-      "info": "Falls back to the desktop image if empty."
+      "info": "Recommended: 1200 × 1500px (4:5 portrait). Falls back to the desktop image if empty."
     },
     {
       "type": "text",
@@ -165,6 +167,39 @@
       "id": "color_scheme",
       "label": "Color scheme",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_spacing",
+      "label": "Override theme section gap",
+      "info": "Default gap comes from Theme settings > DUMA Layout.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "space_above",
+      "label": "Space above",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ section.settings.custom_spacing }}"
+    },
+    {
+      "type": "range",
+      "id": "space_below",
+      "label": "Space below",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ section.settings.custom_spacing }}"
     }
   ],
   "presets": [

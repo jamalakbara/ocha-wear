@@ -74,9 +74,29 @@
         data-product-url="{{ card_product.url }}"
         on:submit="/handleSubmit"
       >
-        {%- form 'product', card_product, id: pick_form_id, data-type: 'add-to-cart-form' -%}
+        <div
+          class="visually-hidden"
+          aria-live="assertive"
+          role="status"
+          aria-atomic="true"
+          ref="liveRegion"
+        ></div>
+        {%- form 'product', card_product, id: pick_form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
           <input type="hidden" name="id" ref="variantId" value="{{ variant.id }}">
-          <button type="submit" name="add" class="duma-pick__add">Add to Bag</button>
+          <input
+            type="hidden"
+            name="quantity"
+            value="{% if variant.quantity_rule.min %}{{ variant.quantity_rule.min }}{% else %}1{% endif %}"
+          >
+          <add-to-cart-component
+            ref="addToCartButtonContainer"
+            data-product-variant-media="{{ variant.featured_media.preview_image | default: card_product.featured_media.preview_image | image_url: width: 100 }}"
+            data-add-to-cart-animation="{{ settings.add_to_cart_animation }}"
+          >
+            <button type="submit" name="add" ref="addToCartButton" on:click="/handleClick" class="duma-pick__add">
+              {{ 'actions.add_to_cart' | t }}
+            </button>
+          </add-to-cart-component>
         {%- endform -%}
       </product-form-component>
     {%- else -%}

@@ -225,9 +225,17 @@ footer .footer-content > .text-block p {
   color: var(--color-foreground-heading);
 }
 
-/* ---------- 8. No section gap on home (full-bleed stack) ---------- */
+/* ---------- 8. Homepage section gap ----------
+   Sections stack full-bleed; the gap between them comes from the
+   "Homepage section gap" theme setting (DUMA Layout) via
+   --duma-section-gap. Sections with "custom spacing" enabled override
+   this with their own inline margins. */
 body.template-index .section {
   margin-block: 0;
+}
+
+body.template-index #MainContent .shopify-section + .shopify-section {
+  margin-top: var(--duma-section-gap, 0px);
 }
 
 /* ---------- 9. PDP — editorial 3-zone layout, pixel spec ----------

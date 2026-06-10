@@ -3,12 +3,14 @@
   assign autoplay = section.settings.autoplay
   assign autoplay_speed = section.settings.autoplay_speed | times: 1000
   assign show_dots = section.settings.show_dots
+  assign desktop_height = section.settings.desktop_height | default: 'full'
 -%}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+{%- render 'duma-section-spacing', section: section -%}
 
 <section
-  class="duma-hero section section--full-width disable-section-top-offset color-{{ section.settings.color_scheme }}"
+  class="duma-hero duma-hero--{{ desktop_height }} section section--full-width disable-section-top-offset color-{{ section.settings.color_scheme }}"
   id="DumaHero-{{ section.id }}"
   data-duma-hero
   {% if autoplay and slide_count > 1 %}data-autoplay="{{ autoplay_speed }}"{% endif %}
@@ -84,6 +86,11 @@
     overflow: hidden;
     background: #ece9e0;
   }
+
+  /* Presets ignore the min-height floor — it only guards full-screen mode */
+  .duma-hero--small { height: 50svh; min-height: 0; }
+  .duma-hero--medium { height: 70svh; min-height: 0; }
+  .duma-hero--large { height: 85svh; min-height: 0; }
 
   .duma-hero__slides {
     position: absolute;
@@ -267,13 +274,14 @@
         {
           "type": "image_picker",
           "id": "image",
-          "label": "Desktop image"
+          "label": "Desktop image",
+          "info": "Recommended: 2880 × 1620px (landscape). Safe for full-screen height."
         },
         {
           "type": "image_picker",
           "id": "image_mobile",
           "label": "Mobile image (1:1)",
-          "info": "Square crop shown on mobile. Falls back to the desktop image if empty."
+          "info": "Recommended: 1200 × 1200px (square). Falls back to the desktop image if empty."
         },
         {
           "type": "text",
@@ -307,15 +315,28 @@
   },
   "settings": [
     {
+      "type": "select",
+      "id": "desktop_height",
+      "label": "Height",
+      "options": [
+        { "value": "small", "label": "Small (50% screen)" },
+        { "value": "medium", "label": "Medium (70% screen)" },
+        { "value": "large", "label": "Large (85% screen)" },
+        { "value": "full", "label": "Full screen" }
+      ],
+      "default": "full"
+    },
+    {
       "type": "range",
       "id": "min_height",
       "label": "Minimum height",
-      "info": "Hero fills the viewport (100vh) but never shrinks below this.",
-      "min": 480,
+      "info": "Full-screen hero never shrinks below this.",
+      "min": 320,
       "max": 1000,
       "step": 10,
       "unit": "px",
-      "default": 660
+      "default": 660,
+      "visible_if": "{{ section.settings.desktop_height == 'full' }}"
     },
     {
       "type": "color_scheme",
@@ -337,9 +358,9 @@
       "type": "range",
       "id": "autoplay_speed",
       "label": "Rotate every",
-      "min": 3,
-      "max": 10,
-      "step": 1,
+      "min": 2,
+      "max": 12,
+      "step": 0.5,
       "unit": "s",
       "default": 6,
       "visible_if": "{{ section.settings.autoplay }}"
@@ -349,6 +370,39 @@
       "id": "show_dots",
       "label": "Show pagination dots",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_spacing",
+      "label": "Override theme section gap",
+      "info": "Default gap comes from Theme settings > DUMA Layout.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "space_above",
+      "label": "Space above",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ section.settings.custom_spacing }}"
+    },
+    {
+      "type": "range",
+      "id": "space_below",
+      "label": "Space below",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ section.settings.custom_spacing }}"
     }
   ],
   "presets": [

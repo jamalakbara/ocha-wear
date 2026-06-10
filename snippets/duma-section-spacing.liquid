@@ -1,0 +1,15 @@
+{%- doc -%}
+  Per-section override of the global homepage section gap
+  (--duma-section-gap, Theme settings > DUMA Layout).
+  Renders nothing unless the section enables "custom_spacing".
+
+  @param {object} section - the calling section
+{%- enddoc -%}
+{%- if section.settings.custom_spacing -%}
+  <style>
+    #shopify-section-{{ section.id }} {
+      margin-top: {{ section.settings.space_above | default: 0 }}px !important;
+      margin-bottom: {{ section.settings.space_below | default: 0 }}px !important;
+    }
+  </style>
+{%- endif -%}

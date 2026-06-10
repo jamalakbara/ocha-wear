@@ -2,12 +2,14 @@
   assign image = section.settings.image
   assign caption = section.settings.caption
   assign link = section.settings.link
+  assign full_width = section.settings.full_width
 -%}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+{%- render 'duma-section-spacing', section: section -%}
 
 <section
-  class="duma-lookbook section section--full-width color-{{ section.settings.color_scheme }}"
+  class="duma-lookbook{% unless full_width %} duma-lookbook--contained{% endunless %} section section--full-width color-{{ section.settings.color_scheme }}"
   style="--duma-lookbook-height: {{ section.settings.height_desktop }}px;"
 >
   {%- if link != blank -%}
@@ -24,7 +26,7 @@
           {{ image | image_url: width: 2160 }} 2160w,
           {{ image | image_url: width: 2880 }} 2880w
         "
-        sizes="100vw"
+        sizes="{% if full_width %}100vw{% else %}(min-width: 750px) min(100vw, 1600px), 100vw{% endif %}"
         alt="{{ image.alt | escape }}"
         loading="lazy"
         width="{{ image.width }}"
@@ -64,6 +66,11 @@
     }
   }
 
+  .duma-lookbook--contained .duma-lookbook__media-wrap {
+    width: min(100% - 3rem, var(--page-width, 1600px));
+    margin-inline: auto;
+  }
+
   .duma-lookbook__image {
     width: 100%;
     height: 100%;
@@ -95,7 +102,15 @@
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Image"
+      "label": "Image",
+      "info": "Recommended: 2880 × 1300px (wide panoramic)."
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width image",
+      "info": "Uncheck to contain the image within the page width with side margins.",
+      "default": true
     },
     {
       "type": "text",
@@ -124,6 +139,39 @@
       "id": "color_scheme",
       "label": "Color scheme",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_spacing",
+      "label": "Override theme section gap",
+      "info": "Default gap comes from Theme settings > DUMA Layout.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "space_above",
+      "label": "Space above",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ section.settings.custom_spacing }}"
+    },
+    {
+      "type": "range",
+      "id": "space_below",
+      "label": "Space below",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ section.settings.custom_spacing }}"
     }
   ],
   "presets": [

@@ -32,6 +32,11 @@
     {%- render 'theme-styles-variables' -%}
     {%- render 'color-schemes' -%}
     {%- render 'duma-fonts' -%}
+    <style>
+      :root {
+        --duma-section-gap: {{ settings.section_gap | default: 0 }}px;
+      }
+    </style>
 
     {% if request.design_mode %}
       {%- render 'theme-editor' -%}

@@ -1,0 +1,140 @@
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+{%- render 'duma-section-spacing', section: section -%}
+
+<section class="duma-link-banner section section--full-width color-{{ section.settings.color_scheme }}">
+  <div class="duma-link-banner__inner duma-link-banner__inner--{{ section.settings.alignment | default: 'center' }}">
+    {%- if section.settings.label != blank -%}
+      {%- if section.settings.link != blank -%}
+        <a class="duma-link-banner__link" href="{{ section.settings.link }}">
+          {{ section.settings.label }}<span class="duma-link-banner__arrow">&rarr;</span>
+        </a>
+      {%- else -%}
+        <span class="duma-link-banner__link">
+          {{ section.settings.label }}<span class="duma-link-banner__arrow">&rarr;</span>
+        </span>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .duma-link-banner {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  /* base.css turns .section into a grid, so alignment lives on a block
+     wrapper inside the grid item, not on the section itself. */
+  .duma-link-banner__inner {
+    width: 100%;
+    padding: 3.25rem 2rem 2.5rem;
+  }
+
+  .duma-link-banner__inner--left { text-align: left; }
+  .duma-link-banner__inner--center { text-align: center; }
+  .duma-link-banner__inner--right { text-align: right; }
+
+  .duma-link-banner__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--font-duma-ui, var(--font-body--family));
+    font-size: 0.8125rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .duma-link-banner__arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .duma-link-banner__link:hover .duma-link-banner__arrow {
+    transform: translateX(6px);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DUMA Link Banner",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Discover Now"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_spacing",
+      "label": "Override theme section gap",
+      "info": "Default gap comes from Theme settings > DUMA Layout.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "space_above",
+      "label": "Space above",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ section.settings.custom_spacing }}"
+    },
+    {
+      "type": "range",
+      "id": "space_below",
+      "label": "Space below",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ section.settings.custom_spacing }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "DUMA Link Banner",
+      "category": "t:categories.storytelling",
+      "settings": {
+        "label": "Discover Now"
+      }
+    }
+  ]
+}
+{% endschema %}

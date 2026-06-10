@@ -45,6 +45,15 @@
         "show_dots": true
       }
     },
+    "discover_now": {
+      "type": "duma-link-banner",
+      "settings": {
+        "label": "Discover Now",
+        "link": "shopify://collections/all",
+        "alignment": "center",
+        "color_scheme": "scheme-1"
+      }
+    },
     "duma_category_slider": {
       "type": "duma-category-slider",
       "blocks": {
@@ -93,8 +102,7 @@
       ],
       "settings": {
         "heading": "",
-        "intro_label": "Discover Now",
-        "intro_link": "shopify://collections/all",
+        "desktop_columns": "4",
         "tile_height": 495,
         "mobile_columns": "2",
         "color_scheme": "scheme-1"
@@ -129,8 +137,7 @@
       "name": "DUMA Category Grid",
       "settings": {
         "heading": "",
-        "intro_label": "",
-        "intro_link": "",
+        "desktop_columns": "2",
         "tile_height": 495,
         "mobile_columns": "2",
         "color_scheme": ""
@@ -204,6 +211,7 @@
   },
   "order": [
     "duma_hero",
+    "discover_now",
     "duma_category_slider",
     "duma_category_slider_V3FxbW",
     "hero_two_up",

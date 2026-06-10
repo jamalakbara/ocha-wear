@@ -463,8 +463,8 @@ class QuickOrderListComponent extends Component {
   #showSuccessMessage(quantityAdded) {
     this.#clearErrorMessage();
 
-    const oneItemText = Theme?.translations?.items_added_to_cart_one || '1 item added to cart';
-    const itemsText = Theme?.translations?.items_added_to_cart_other || '{{ count }} items added to cart';
+    const oneItemText = Theme?.translations?.items_added_to_cart_one || '1 item added to bag';
+    const itemsText = Theme?.translations?.items_added_to_cart_other || '{{ count }} items added to bag';
 
     const message = quantityAdded === 1 ? oneItemText : itemsText.replace('{{ count }}', quantityAdded.toString());
 
