@@ -1,0 +1,476 @@
+{% comment %}
+  ocha wear custom search overlay — full-width panel that drops below the header,
+  with live product results (Shopify predictive search) + a Journal column.
+  Replaces the native search-modal render in theme.liquid. Opened by hijacking the
+  header search button (search-button).
+{% endcomment %}
+
+{%- liquid
+  assign trending = settings.duma_search_trending_collection
+  assign trending_count = settings.duma_search_trending_count | default: 4
+-%}
+
+<div class="duma-search-scrim" data-duma-search-scrim></div>
+<div class="duma-search-panel" data-duma-search-panel aria-label="Search" role="dialog" aria-modal="true">
+  <div class="ds-row">
+    <svg class="ds-mag" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input
+      type="search"
+      class="ds-input"
+      data-duma-search-input
+      placeholder="Search"
+      autocomplete="off"
+      spellcheck="false"
+      aria-label="Search"
+    >
+    <button class="ds-close" data-duma-search-close type="button" aria-label="Close search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+
+  {%- comment -%} ---------- Empty state ---------- {%- endcomment -%}
+  <div class="ds-empty" data-duma-search-empty>
+    {%- assign popular = settings.duma_popular_searches | newline_to_br | split: '<br />' -%}
+    {%- if popular.size > 0 -%}
+      <div class="ds-pop-title">Popular Searches</div>
+      <div class="ds-chips">
+        {%- for term in popular -%}
+          {%- assign t = term | strip -%}
+          {%- if t != blank -%}
+            <button class="ds-chip" type="button" data-duma-chip="{{ t | escape }}">{{ t }}</button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if trending != blank and trending.products.size > 0 -%}
+      <div class="ds-trend-title">Trending Now</div>
+      <div class="ds-trend-grid">
+        {%- for product in trending.products limit: trending_count -%}
+          <a class="ds-card" href="{{ product.url }}">
+            <div class="ds-card-img">
+              {%- if product.featured_media -%}
+                <img
+                  src="{{ product.featured_media | image_url: width: 640 }}"
+                  alt="{{ product.featured_media.alt | escape }}"
+                  loading="lazy"
+                  width="640"
+                  height="853"
+                >
+              {%- endif -%}
+            </div>
+            <div class="ds-card-name">{{ product.title }}</div>
+            <div class="ds-card-price">
+              {%- if product.compare_at_price > product.price -%}
+                <span class="now">{{ product.price | money }}</span>
+                <span class="was">{{ product.compare_at_price | money }}</span>
+              {%- else -%}
+                <span class="plain">{{ product.price | money }}</span>
+              {%- endif -%}
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} ---------- Results state ---------- {%- endcomment -%}
+  <div class="ds-results" data-duma-search-results>
+    <div class="ds-grid">
+      <div class="ds-main">
+        <div class="ds-head">
+          <span class="ds-count" data-duma-count>0 results</span>
+          <a class="ds-viewall" data-duma-viewall href="{{ routes.search_url }}">View all</a>
+        </div>
+        <div class="ds-products" data-duma-products></div>
+        <div class="ds-none" data-duma-none hidden>
+          <div class="big">No products could be found</div>
+          <div class="sub">Try another keyword, or browse our collections.</div>
+        </div>
+      </div>
+      <div class="ds-side">
+        <div class="ds-head"><span class="ds-jtitle">Journal</span></div>
+        <div class="ds-journal" data-duma-journal></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    if (window.__dumaSearchInit) return;
+    window.__dumaSearchInit = true;
+
+    var scrim    = document.querySelector('[data-duma-search-scrim]');
+    var panel    = document.querySelector('[data-duma-search-panel]');
+    var input    = document.querySelector('[data-duma-search-input]');
+    var closeBtn = document.querySelector('[data-duma-search-close]');
+    var empty    = document.querySelector('[data-duma-search-empty]');
+    var results  = document.querySelector('[data-duma-search-results]');
+    var products = document.querySelector('[data-duma-products]');
+    var journal  = document.querySelector('[data-duma-journal]');
+    var countEl  = document.querySelector('[data-duma-count]');
+    var noneEl   = document.querySelector('[data-duma-none]');
+    var viewAll  = document.querySelector('[data-duma-viewall]');
+    if (!panel || !input) return;
+
+    var SUGGEST = {{ routes.predictive_search_url | json }} + '.json';
+    var SEARCH  = {{ routes.search_url | json }};
+    var headerGroup = document.querySelector('#header-group');
+
+    function positionPanel() {
+      var top = headerGroup ? Math.max(0, headerGroup.getBoundingClientRect().bottom) : 0;
+      panel.style.top = top + 'px';
+      panel.style.maxHeight = 'calc(100vh - ' + top + 'px)';
+    }
+
+    function open() {
+      positionPanel();
+      scrim.classList.add('is-open');
+      panel.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      run(input.value);
+      setTimeout(function () { input.focus(); }, 80);
+    }
+    function close() {
+      scrim.classList.remove('is-open');
+      panel.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    // Hijack the theme's header search button(s)
+    document.addEventListener('click', function (e) {
+      var trigger = e.target.closest('search-button, [aria-haspopup="dialog"][aria-label]');
+      if (trigger && trigger.closest('search-button')) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        open();
+      }
+    }, true);
+
+    closeBtn.addEventListener('click', close);
+    scrim.addEventListener('click', close);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    window.addEventListener('scroll', function () { if (panel.classList.contains('is-open')) positionPanel(); }, { passive: true });
+    window.addEventListener('resize', function () { if (panel.classList.contains('is-open')) positionPanel(); });
+
+    function money(v) {
+      if (typeof v === 'string') return v;
+      try {
+        return new Intl.NumberFormat(undefined, { style: 'currency', currency: {{ shop.currency | json }} }).format(v / 100);
+      } catch (err) { return v; }
+    }
+
+    function esc(s) { return (s || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+    function productCard(p) {
+      var img = p.image || (p.featured_image && p.featured_image.url) || '';
+      var priceHtml;
+      var price = p.price != null ? money(p.price) : '';
+      var compare = p.compare_at_price != null ? money(p.compare_at_price) : '';
+      if (compare && compare !== price) {
+        priceHtml = '<span class="now">' + price + '</span><span class="was">' + compare + '</span>';
+      } else {
+        priceHtml = '<span class="plain">' + price + '</span>';
+      }
+      return '<a class="ds-card" href="' + p.url + '">' +
+        '<div class="ds-card-img">' + (img ? '<img src="' + img + '" alt="" loading="lazy">' : '') + '</div>' +
+        '<div class="ds-card-name">' + esc(p.title) + '</div>' +
+        '<div class="ds-card-price">' + priceHtml + '</div></a>';
+    }
+
+    function journalItem(a) {
+      var img = a.image || (a.featured_image && a.featured_image.url) || '';
+      var tag = a.type ? esc(a.type) : 'Journal';
+      return '<a class="ds-jitem" href="' + a.url + '">' +
+        '<div class="ds-jimg">' + (img ? '<img src="' + img + '" alt="" loading="lazy">' : '') + '</div>' +
+        '<div><div class="ds-jtag">' + tag + '</div><div class="ds-jname">' + esc(a.title) + '</div></div></a>';
+    }
+
+    var ctrl;
+    function run(raw) {
+      var q = (raw || '').trim();
+      if (!q) {
+        empty.classList.add('is-shown');
+        results.classList.remove('is-shown');
+        return;
+      }
+      empty.classList.remove('is-shown');
+      results.classList.add('is-shown');
+      viewAll.href = SEARCH + '?q=' + encodeURIComponent(q);
+
+      if (ctrl) ctrl.abort();
+      ctrl = new AbortController();
+      var url = SUGGEST + '?q=' + encodeURIComponent(q) +
+        '&resources[type]=product,article&resources[limit]=9' +
+        '&resources[options][unavailable_products]=last';
+
+      fetch(url, { signal: ctrl.signal })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var res = (data.resources && data.resources.results) || {};
+          var prods = res.products || [];
+          var arts = res.articles || [];
+
+          countEl.textContent = prods.length + (prods.length === 1 ? ' result' : ' results');
+          if (prods.length) {
+            products.hidden = false;
+            noneEl.hidden = true;
+            products.innerHTML = prods.map(productCard).join('');
+          } else {
+            products.hidden = true;
+            products.innerHTML = '';
+            noneEl.hidden = false;
+          }
+          journal.innerHTML = arts.length
+            ? arts.map(journalItem).join('')
+            : '<div class="ds-jempty">No results could be found</div>';
+        })
+        .catch(function (err) { if (err.name !== 'AbortError') { /* keep prior */ } });
+    }
+
+    var debounce;
+    input.addEventListener('input', function (e) {
+      clearTimeout(debounce);
+      var v = e.target.value;
+      debounce = setTimeout(function () { run(v); }, 220);
+    });
+
+    panel.addEventListener('click', function (e) {
+      var chip = e.target.closest('[data-duma-chip]');
+      if (chip) { input.value = chip.getAttribute('data-duma-chip'); run(input.value); input.focus(); }
+    });
+
+    run('');
+  })();
+</script>
+
+{% stylesheet %}
+  .duma-search-scrim {
+    position: fixed;
+    inset: 0;
+    background: rgba(54, 42, 33, 0.3);
+    z-index: 48;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s;
+  }
+  .duma-search-scrim.is-open { opacity: 1; visibility: visible; }
+
+  .duma-search-panel {
+    position: fixed;
+    left: 0;
+    top: var(--header-group-height, 104px);
+    width: 100%;
+    background: #fff;
+    z-index: 49;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0 46px 56px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-16px);
+    transition: opacity 0.3s ease, transform 0.36s cubic-bezier(0.2, 0.6, 0.2, 1), visibility 0.3s;
+    box-shadow: 0 26px 54px rgba(0, 0, 0, 0.11);
+  }
+  .duma-search-panel.is-open { opacity: 1; visibility: visible; transform: translateY(0); }
+
+  .ds-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 30px 0 28px;
+  }
+  .ds-row > svg, .ds-row .svg-wrapper svg, .ds-row svg:first-of-type {
+    width: 25px;
+    height: 25px;
+    stroke: #9a9a9a;
+    fill: none;
+    stroke-width: 1.4;
+    flex: 0 0 auto;
+  }
+  .ds-input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    font-family: var(--font-duma-ui, var(--font-body--family));
+    font-size: 26px;
+    font-weight: 300;
+    letter-spacing: 0.005em;
+    color: var(--duma-text, #454545);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .ds-input::placeholder { color: #c2c2c2; font-weight: 300; }
+  .ds-input:focus { outline: none; }
+  .ds-input::-webkit-search-cancel-button { display: none; }
+
+  .ds-close {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .ds-close svg {
+    width: 22px;
+    height: 22px;
+    stroke: #8a8a8a;
+    stroke-width: 1.4;
+    fill: none;
+    transition: stroke 0.2s, transform 0.35s ease;
+  }
+  .ds-close:hover svg { stroke: var(--duma-text, #454545); transform: rotate(90deg); }
+
+  .ds-empty, .ds-results { display: none; }
+  .ds-empty.is-shown, .ds-results.is-shown { display: block; }
+
+  .ds-pop-title, .ds-trend-title {
+    font-family: var(--font-duma-ui, var(--font-body--family));
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #a3a3a3;
+  }
+  .ds-pop-title { padding-top: 6px; margin-bottom: 20px; }
+  .ds-chips { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 50px; }
+  .ds-chip {
+    border: 1px solid var(--duma-line, #e3e3e3);
+    padding: 11px 22px;
+    font-family: var(--font-duma-ui, var(--font-body--family));
+    font-size: 12.5px;
+    letter-spacing: 0.07em;
+    color: var(--duma-text, #454545);
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.25s, color 0.25s;
+  }
+  .ds-chip:hover { border-color: var(--duma-brown, #543425); color: var(--duma-brown, #543425); }
+
+  .ds-trend-title {
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--duma-line, #e3e3e3);
+    margin-bottom: 34px;
+  }
+  .ds-trend-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px 24px; }
+
+  .ds-grid { display: grid; grid-template-columns: 1fr 282px; gap: 60px; align-items: start; }
+  .ds-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 18px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--duma-line, #e3e3e3);
+    margin-bottom: 34px;
+  }
+  .ds-count { font-size: 14px; color: #9d9d9d; letter-spacing: 0.05em; }
+  .ds-viewall {
+    font-family: var(--font-duma-display, var(--font-heading--family));
+    font-weight: 500;
+    font-size: 17px;
+    color: var(--duma-text, #454545);
+    letter-spacing: 0.015em;
+    position: relative;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .ds-viewall::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 1px;
+    width: 0;
+    background: currentColor;
+    transition: width 0.3s ease;
+  }
+  .ds-viewall:hover { color: var(--duma-brown, #543425); }
+  .ds-viewall:hover::after { width: 100%; }
+  .ds-jtitle { font-family: var(--font-duma-ui, var(--font-body--family)); font-size: 15px; color: #9d9d9d; letter-spacing: 0.05em; }
+
+  .ds-products { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px 24px; }
+  .ds-card { display: block; text-decoration: none; }
+  .ds-card-img {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: #f1ede7;
+  }
+  .ds-card-img img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.85s cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+  .ds-card:hover .ds-card-img img { transform: scale(1.055); }
+  .ds-card-name {
+    font-family: var(--font-duma-display, var(--font-heading--family));
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--duma-text, #454545);
+    margin-top: 20px;
+    line-height: 1.3;
+  }
+  .ds-card-price {
+    text-align: center;
+    margin-top: 9px;
+    font-size: 13.5px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: baseline;
+  }
+  .ds-card-price .now { color: var(--duma-sale-red, #c8232c); }
+  .ds-card-price .was { text-decoration: line-through; color: #b6b6b6; font-size: 12.5px; }
+  .ds-card-price .plain { color: var(--duma-text-muted, #666); }
+
+  .ds-side { display: flex; flex-direction: column; }
+  .ds-journal { display: flex; flex-direction: column; gap: 24px; }
+  .ds-jitem { display: grid; grid-template-columns: 80px 1fr; gap: 16px; align-items: center; text-decoration: none; }
+  .ds-jimg { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: #f1ede7; }
+  .ds-jimg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+  .ds-jitem:hover .ds-jimg img { transform: scale(1.06); }
+  .ds-jtag { font-size: 10px; letter-spacing: 0.17em; text-transform: uppercase; color: #aaa; margin-bottom: 7px; }
+  .ds-jname {
+    font-family: var(--font-duma-section, var(--font-subheading--family));
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--duma-text, #454545);
+    line-height: 1.28;
+    transition: color 0.2s;
+  }
+  .ds-jitem:hover .ds-jname { color: var(--duma-brown, #543425); }
+  .ds-jempty { font-size: 15px; color: #a0a0a0; letter-spacing: 0.02em; padding: 4px 0; }
+
+  .ds-none { padding: 18px 0 10px; }
+  .ds-none .big {
+    font-family: var(--font-duma-section, var(--font-subheading--family));
+    font-size: 24px;
+    color: var(--duma-text, #454545);
+    letter-spacing: 0.02em;
+    margin-bottom: 10px;
+  }
+  .ds-none .sub { font-size: 13.5px; color: #9d9d9d; letter-spacing: 0.03em; }
+
+  @media screen and (max-width: 980px) {
+    .duma-search-panel { padding: 0 30px 44px; }
+    .ds-grid { grid-template-columns: 1fr; gap: 46px; }
+    .ds-trend-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media screen and (max-width: 620px) {
+    .duma-search-panel { padding: 0 20px 36px; }
+    .ds-input { font-size: 20px; }
+    .ds-products, .ds-trend-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+{% endstylesheet %}

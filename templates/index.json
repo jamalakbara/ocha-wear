@@ -13,10 +13,9 @@
       "type": "duma-hero",
       "blocks": {
         "slide_1": {
-          "type": "_duma-hero-slide",
+          "type": "duma-hero-slide",
           "settings": {
-            "image": "shopify://shop_images/look-studio-1bRwJhXhugM-unsplash_2.jpg",
-            "wordmark": "ocha wear",
+            "wordmark": "Poème",
             "subline": "OUT NOW — NEW ARRIVALS",
             "cta_label": "SHOP NOW",
             "link": "shopify://collections/all"
@@ -83,6 +82,8 @@
       ],
       "settings": {
         "heading": "",
+        "intro_label": "Discover Now",
+        "intro_link": "shopify://collections/all",
         "tile_height": 495,
         "mobile_columns": "2",
         "color_scheme": "scheme-1"
@@ -124,8 +125,7 @@
     "duma_lookbook": {
       "type": "duma-lookbook",
       "settings": {
-        "caption": "ocha Escape 25",
-        "link": "",
+        "caption": "Inside the ocha Atelier",
         "height_desktop": 650,
         "color_scheme": "scheme-1"
       }
@@ -175,8 +175,8 @@
                 "max_width": "normal",
                 "alignment": "center",
                 "type_preset": "h4",
-                "font": "var(--font-subheading--family)",
-                "font_size": "1.25rem",
+                "font": "var(--font-duma-section)",
+                "font_size": "1.625rem",
                 "line_height": "normal",
                 "letter_spacing": "loose",
                 "case": "uppercase",
@@ -351,6 +351,21 @@
     },
     "lifestyle_banner": {
       "type": "hero",
+      "blocks": {
+        "banner_cta": {
+          "type": "button",
+          "name": "Button",
+          "settings": {
+            "label": "Explore The Atelier →",
+            "link": "shopify://collections/all",
+            "open_in_new_tab": false,
+            "style_class": "button",
+            "width": "fit-content",
+            "width_mobile": "fit-content"
+          }
+        }
+      },
+      "block_order": ["banner_cta"],
       "settings": {
         "media_type_1": "image",
         "media_type_2": "image",
@@ -363,7 +378,7 @@
         "content_direction": "row",
         "vertical_on_mobile": true,
         "horizontal_alignment": "center",
-        "vertical_alignment": "center",
+        "vertical_alignment": "flex-end",
         "align_baseline": false,
         "horizontal_alignment_flex_direction_column": "center",
         "vertical_alignment_flex_direction_column": "center",

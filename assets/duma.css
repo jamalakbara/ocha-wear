@@ -85,6 +85,38 @@ footer .email-signup__input--underline {
   letter-spacing: 0.04em;
 }
 
+/* ---------- 6b. Header logo wordmark — display serif ----------
+   Applies when no logo image is uploaded and the store name renders as text.
+   The block sets --font-family inline (body family), so override font-family
+   directly rather than via the custom property.
+*/
+.header-logo {
+  font-family: var(--font-duma-display, var(--font-heading--family)) !important;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  font-size: 30px;
+  text-transform: none;
+}
+
+/* ---------- 6c. Bottom banner CTA — white pill, dark text ---------- */
+#shopify-section-lifestyle_banner .button,
+#shopify-section-lifestyle_banner a.button {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--duma-text, #454545);
+  border: none;
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 16px 34px;
+  margin-bottom: 48px;
+  transition: background 0.3s ease;
+}
+
+#shopify-section-lifestyle_banner .button:hover {
+  background: #fff;
+}
+
 /* ---------- 7. Section headings — display serif look ---------- */
 .section-heading--duma,
 .product-list__heading,
@@ -119,28 +151,33 @@ body.template-index .section {
 }
 
 /* Vendor / title / price typographic accents */
-.template-product .product-details h1,
-.template-product .product-details .product-title {
-  font-family: var(--font-duma-section, var(--font-subheading--family));
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #454545;
+/* Title weight — JSON block sets size/color; weight enforced here */
+.template-product .product-details .text-block p {
+  font-weight: 600;
+}
+
+.template-product .product-details .text-block:first-of-type p {
+  font-weight: 400;
 }
 
 /* Accordion summary — underlined serif uppercase per DUMA spec */
 .template-product .product-details .accordion .details__header {
   font-family: var(--font-duma-section, var(--font-subheading--family));
+  font-size: 12px;
   text-transform: uppercase;
   text-decoration: underline;
   text-underline-offset: 3px;
-  letter-spacing: 0.06em;
-  padding-block: 18px;
+  letter-spacing: 0.08em;
+  padding-block: 16px;
   color: #454545;
+  font-weight: normal;
 }
 
 .template-product .product-details .accordion .details-content {
   font-family: var(--font-duma-ui, var(--font-body--family));
   color: #454545;
+  font-size: 15px;
+  line-height: 1.6;
 }
 
 .template-product .product-details .accordion {
@@ -202,4 +239,26 @@ body.template-index .section {
   color: #fff;
   background: rgba(0, 0, 0, 0.25);
   pointer-events: none;
+}
+
+/* Constrain nested headings in accordion description HTML */
+/* Strip default paragraph margin inside text blocks so spacing is controlled by block padding */
+.template-product .product-details .group-block > * p {
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Constrain any heading tags inside product description HTML */
+.template-product .product-details .accordion .details-content :is(h1, h2, h3, h4, h5, h6) {
+  font-size: 15px;
+  font-weight: normal;
+  line-height: 1.6;
+  margin-block: 0.25em;
+}
+
+/* Price component explicit sizing */
+.template-product .product-details product-price {
+  font-size: 15px;
+  line-height: 1.4;
 }

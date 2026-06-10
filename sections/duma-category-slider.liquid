@@ -13,6 +13,20 @@
     <h2 class="duma-category__heading">{{ section.settings.heading }}</h2>
   {%- endif -%}
 
+  {%- if section.settings.intro_label != blank -%}
+    <div class="duma-category__intro">
+      {%- if section.settings.intro_link != blank -%}
+        <a class="duma-category__intro-link" href="{{ section.settings.intro_link }}">
+          {{ section.settings.intro_label }}<span class="duma-category__intro-arrow">&rarr;</span>
+        </a>
+      {%- else -%}
+        <span class="duma-category__intro-link">
+          {{ section.settings.intro_label }}<span class="duma-category__intro-arrow">&rarr;</span>
+        </span>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
   <div class="duma-category__grid" data-tile-count="{{ tile_count }}">
     {%- for block in section.blocks -%}
       {%- liquid
@@ -84,6 +98,32 @@
     font-size: 1.25rem;
     letter-spacing: 0.15em;
     color: var(--color-foreground-heading);
+  }
+
+  .duma-category__intro {
+    text-align: center;
+    padding: 3.25rem 1rem 2.5rem;
+  }
+
+  .duma-category__intro-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--font-duma-ui, var(--font-body--family));
+    font-size: 0.8125rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .duma-category__intro-arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .duma-category__intro-link:hover .duma-category__intro-arrow {
+    transform: translateX(6px);
   }
 
   .duma-category__grid {
@@ -172,6 +212,17 @@
       "id": "heading",
       "label": "Section heading",
       "info": "Optional. Leave blank for image-only grid."
+    },
+    {
+      "type": "text",
+      "id": "intro_label",
+      "label": "Intro link label",
+      "info": "Optional centered link shown in a whitespace band above the grid (e.g. Discover Now)."
+    },
+    {
+      "type": "url",
+      "id": "intro_link",
+      "label": "Intro link URL"
     },
     {
       "type": "range",

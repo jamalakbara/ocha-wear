@@ -2284,5 +2284,84 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Floating widgets",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Wishlist tab"
+      },
+      {
+        "type": "checkbox",
+        "id": "duma_enable_wishlist",
+        "label": "Show wishlist tab",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "duma_wishlist_label",
+        "label": "Wishlist label",
+        "default": "My Wishlist"
+      },
+      {
+        "type": "url",
+        "id": "duma_wishlist_url",
+        "label": "Wishlist link"
+      },
+      {
+        "type": "header",
+        "content": "WhatsApp button"
+      },
+      {
+        "type": "checkbox",
+        "id": "duma_enable_whatsapp",
+        "label": "Show WhatsApp button",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "duma_whatsapp_number",
+        "label": "WhatsApp number",
+        "info": "International format, digits only (e.g. 6281234567890)."
+      },
+      {
+        "type": "text",
+        "id": "duma_whatsapp_message",
+        "label": "Prefilled message",
+        "default": "Hi! I have a question about"
+      }
+    ]
+  },
+  {
+    "name": "Search overlay",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Custom full-width search overlay with live product results and a Journal column."
+      },
+      {
+        "type": "textarea",
+        "id": "duma_popular_searches",
+        "label": "Popular searches",
+        "info": "One per line. Shown as clickable chips before typing.",
+        "default": "Poème\nLinen\nKnitwear\nDresses\nOuterwear"
+      },
+      {
+        "type": "collection",
+        "id": "duma_search_trending_collection",
+        "label": "Trending collection",
+        "info": "Products shown under “Trending Now” before typing."
+      },
+      {
+        "type": "range",
+        "id": "duma_search_trending_count",
+        "label": "Trending products",
+        "min": 2,
+        "max": 8,
+        "step": 1,
+        "default": 4
+      }
+    ]
   }
 ]

@@ -222,10 +222,37 @@
             "menu_care",
             "group_newsletter"
           ]
+        },
+        "legal_line": {
+          "type": "text",
+          "name": "Legal",
+          "settings": {
+            "text": "<p>PT Ocha Kreasi Indonesia</p>",
+            "width": "fill",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "paragraph",
+            "font": "var(--font-duma-ui)",
+            "font_size": "0.8125rem",
+            "line_height": "normal",
+            "letter_spacing": "loose",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 64,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
         }
       },
       "block_order": [
-        "row_columns"
+        "row_columns",
+        "legal_line"
       ],
       "settings": {
         "section_width": "page-width",
