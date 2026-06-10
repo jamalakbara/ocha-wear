@@ -1,0 +1,180 @@
+{%- liquid
+  assign image = section.settings.image
+  assign image_mobile = section.settings.image_mobile
+  assign cta_label = section.settings.cta_label
+  assign cta_link = section.settings.cta_link
+-%}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+
+{%- if cta_link != blank -%}
+  <a class="duma-atelier section section--full-width" href="{{ cta_link }}" style="--duma-atelier-height: {{ section.settings.height }}px;">
+{%- else -%}
+  <section class="duma-atelier section section--full-width" style="--duma-atelier-height: {{ section.settings.height }}px;">
+{%- endif -%}
+
+  {%- if image != blank -%}
+    <img
+      class="duma-atelier__photo duma-atelier__photo--desktop"
+      src="{{ image | image_url: width: 2880 }}"
+      srcset="{{ image | image_url: width: 1440 }} 1440w, {{ image | image_url: width: 2160 }} 2160w, {{ image | image_url: width: 2880 }} 2880w"
+      sizes="100vw"
+      alt="{{ image.alt | escape }}"
+      loading="lazy"
+      width="{{ image.width }}"
+      height="{{ image.height }}"
+    >
+  {%- else -%}
+    {{ 'lifestyle-2' | placeholder_svg_tag: 'duma-atelier__photo duma-atelier__photo--desktop' }}
+  {%- endif -%}
+
+  {%- if image_mobile != blank -%}
+    <img
+      class="duma-atelier__photo duma-atelier__photo--mobile"
+      src="{{ image_mobile | image_url: width: 1200 }}"
+      srcset="{{ image_mobile | image_url: width: 600 }} 600w, {{ image_mobile | image_url: width: 1200 }} 1200w"
+      sizes="100vw"
+      alt="{{ image_mobile.alt | escape }}"
+      loading="lazy"
+      width="{{ image_mobile.width }}"
+      height="{{ image_mobile.height }}"
+    >
+  {%- elsif image != blank -%}
+    <img
+      class="duma-atelier__photo duma-atelier__photo--mobile"
+      src="{{ image | image_url: width: 1200 }}"
+      alt="{{ image.alt | escape }}"
+      loading="lazy"
+      width="{{ image.width }}"
+      height="{{ image.height }}"
+    >
+  {%- endif -%}
+
+  {%- if cta_label != blank -%}
+    <span class="duma-atelier__cta">
+      {{ cta_label }}<span class="duma-atelier__arrow">&rarr;</span>
+    </span>
+  {%- endif -%}
+
+{%- if cta_link != blank -%}
+  </a>
+{%- else -%}
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .duma-atelier {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: var(--duma-atelier-height, 722px);
+    min-height: 560px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    text-decoration: none;
+    background: #f1e4d8;
+  }
+
+  .duma-atelier__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.1s ease;
+  }
+
+  .duma-atelier:hover .duma-atelier__photo { transform: scale(1.03); }
+
+  .duma-atelier__photo--mobile { display: none; }
+
+  @media screen and (max-width: 749px) {
+    .duma-atelier__photo--desktop { display: none; }
+    .duma-atelier__photo--mobile { display: block; }
+  }
+
+  .duma-atelier__cta {
+    position: absolute;
+    left: 50%;
+    bottom: 48px;
+    transform: translateX(-50%);
+    z-index: 3;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--color-foreground, #454545);
+    font-family: var(--font-duma-ui, var(--font-body--family));
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 16px 34px;
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    transition: background 0.3s ease;
+  }
+
+  .duma-atelier:hover .duma-atelier__cta { background: #fff; }
+
+  .duma-atelier__arrow { transition: transform 0.3s ease; }
+  .duma-atelier:hover .duma-atelier__arrow { transform: translateX(6px); }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DUMA Atelier Banner",
+  "class": "container-background-image",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image",
+      "info": "Falls back to the desktop image if empty."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Explore The Atelier →"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "label": "Height",
+      "min": 480,
+      "max": 900,
+      "step": 6,
+      "unit": "px",
+      "default": 720
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "DUMA Atelier Banner",
+      "category": "t:categories.banners",
+      "settings": {
+        "cta_label": "Explore The Atelier →"
+      }
+    }
+  ]
+}
+{% endschema %}

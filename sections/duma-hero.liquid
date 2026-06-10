@@ -1,149 +1,116 @@
 {%- liquid
   assign slide_count = section.blocks.size
   assign autoplay = section.settings.autoplay
-  assign autoplay_speed = section.settings.autoplay_speed
-  assign show_arrows = section.settings.show_arrows
+  assign autoplay_speed = section.settings.autoplay_speed | times: 1000
+  assign show_dots = section.settings.show_dots
 -%}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 
 <section
   class="duma-hero section section--full-width disable-section-top-offset color-{{ section.settings.color_scheme }}"
-  style="--duma-hero-height-desktop: {{ section.settings.height_desktop }}px;"
+  id="DumaHero-{{ section.id }}"
+  data-duma-hero
+  {% if autoplay and slide_count > 1 %}data-autoplay="{{ autoplay_speed }}"{% endif %}
+  style="--duma-hero-min-height: {{ section.settings.min_height }}px;"
 >
-  {%- if slide_count > 1 -%}
-    {%- capture controls -%}
-      {%- render 'slideshow-controls',
-        style: 'dots',
-        autoplay: autoplay,
-        item_count: slide_count,
-        show_arrows: false,
-        controls_on_media: true,
-        pagination_position: 'center',
-        icon_style: 'arrow'
-      -%}
-    {%- endcapture -%}
-
-    <slideshow-component
-      class="duma-hero__slideshow"
-      style="--slide-min-height: var(--duma-hero-height-mobile); --slide-min-height-desktop: var(--duma-hero-height-desktop);"
-      {% if autoplay %}autoplay="{{ autoplay_speed }}" aria-live="polite"{% endif %}
-      initial-slide="0"
-      infinite
-    >
-      <slideshow-container ref="slideshowContainer">
-        {%- if show_arrows -%}
-          {%- render 'slideshow-arrows', icon_style: 'arrow', arrows_position: 'center' -%}
-        {%- endif -%}
-        <slideshow-slides tabindex="-1" ref="scroller">
-          {%- for block in section.blocks -%}
-            {%- assign slide_url = block.settings.link -%}
-            <slideshow-slide class="duma-hero__slide" slide-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
-              {%- if slide_url != blank -%}
-                <a class="duma-hero__slide-inner" href="{{ slide_url }}">
-              {%- else -%}
-                <div class="duma-hero__slide-inner">
-              {%- endif -%}
-                {%- render 'duma-hero-slide-media', block: block -%}
-                {%- if block.settings.wordmark != blank -%}
-                  <div class="duma-hero__wordmark-wrap">
-                    <h2 class="duma-hero__wordmark">{{ block.settings.wordmark }}</h2>
-                    {%- if block.settings.subline != blank -%}
-                      <p class="duma-hero__subline">{{ block.settings.subline }}</p>
-                    {%- endif -%}
-                    {%- if block.settings.cta_label != blank -%}
-                      <span class="duma-hero__cta">{{ block.settings.cta_label }}</span>
-                    {%- endif -%}
-                  </div>
-                {%- endif -%}
-              {%- if slide_url != blank -%}
-                </a>
-              {%- else -%}
-                </div>
-              {%- endif -%}
-            </slideshow-slide>
-          {%- endfor -%}
-        </slideshow-slides>
-      </slideshow-container>
-      {{ controls }}
-    </slideshow-component>
-    {% render 'slideshow-styles' %}
-  {%- else -%}
+  <div class="duma-hero__slides" data-duma-hero-slides>
     {%- for block in section.blocks -%}
       {%- assign slide_url = block.settings.link -%}
-      {%- if slide_url != blank -%}
-        <a class="duma-hero__slide-inner duma-hero__slide-inner--single" href="{{ slide_url }}" {{ block.shopify_attributes }}>
-      {%- else -%}
-        <div class="duma-hero__slide-inner duma-hero__slide-inner--single" {{ block.shopify_attributes }}>
-      {%- endif -%}
+      {%- capture slide_body -%}
         {%- render 'duma-hero-slide-media', block: block -%}
+        <span class="duma-hero__scrim" aria-hidden="true"></span>
         {%- if block.settings.wordmark != blank -%}
-          <div class="duma-hero__wordmark-wrap">
-            <h1 class="duma-hero__wordmark">{{ block.settings.wordmark }}</h1>
+          <span class="duma-hero__wordmark-wrap">
+            <span class="duma-hero__wordmark">{{ block.settings.wordmark }}</span>
             {%- if block.settings.subline != blank -%}
-              <p class="duma-hero__subline">{{ block.settings.subline }}</p>
+              <span class="duma-hero__subline">{{ block.settings.subline }}</span>
             {%- endif -%}
             {%- if block.settings.cta_label != blank -%}
               <span class="duma-hero__cta">{{ block.settings.cta_label }}</span>
             {%- endif -%}
-          </div>
+          </span>
         {%- endif -%}
+      {%- endcapture -%}
+
       {%- if slide_url != blank -%}
-        </a>
+        <a
+          class="duma-hero__slide{% if forloop.first %} is-active{% endif %}"
+          href="{{ slide_url }}"
+          data-duma-hero-slide
+          data-index="{{ forloop.index0 }}"
+          {{ block.shopify_attributes }}
+        >{{ slide_body }}</a>
       {%- else -%}
-        </div>
+        <div
+          class="duma-hero__slide{% if forloop.first %} is-active{% endif %}"
+          data-duma-hero-slide
+          data-index="{{ forloop.index0 }}"
+          {{ block.shopify_attributes }}
+        >{{ slide_body }}</div>
       {%- endif -%}
     {%- else -%}
-      <div class="duma-hero__slide-inner duma-hero__slide-inner--placeholder">
-        {{ 'lifestyle-1' | placeholder_svg_tag: 'duma-hero__media duma-hero__media--placeholder' }}
+      <div class="duma-hero__slide is-active" data-duma-hero-slide data-index="0">
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'duma-hero__media duma-hero__media-only' }}
+        <span class="duma-hero__wordmark-wrap">
+          <span class="duma-hero__wordmark">ocha wear</span>
+        </span>
       </div>
     {%- endfor -%}
+  </div>
+
+  {%- if show_dots and slide_count > 1 -%}
+    <div class="duma-hero__dots" data-duma-hero-dots>
+      {%- for block in section.blocks -%}
+        <button
+          type="button"
+          class="duma-hero__dot{% if forloop.first %} is-active{% endif %}"
+          data-index="{{ forloop.index0 }}"
+          aria-label="Go to slide {{ forloop.index }}"
+        ></button>
+      {%- endfor -%}
+    </div>
   {%- endif -%}
 </section>
 
 {% stylesheet %}
   .duma-hero {
-    --duma-hero-height-mobile: 100svh;
     position: relative;
     width: 100%;
-    overflow: hidden;
+    height: 100svh;
+    min-height: var(--duma-hero-min-height, 660px);
     margin: 0;
     padding: 0;
+    overflow: hidden;
+    background: #ece9e0;
   }
 
-  .duma-hero__slideshow {
+  .duma-hero__slides {
+    position: absolute;
+    inset: 0;
+  }
+
+  .duma-hero__slide {
+    position: absolute;
+    inset: 0;
     display: block;
-    width: 100%;
-    height: var(--duma-hero-height-mobile);
-  }
-
-  @media screen and (min-width: 750px) {
-    .duma-hero__slideshow {
-      height: var(--duma-hero-height-desktop);
-    }
-  }
-
-  .duma-hero__slide-inner,
-  .duma-hero__slide-inner--single {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: var(--duma-hero-height-mobile);
     color: #fff;
     text-decoration: none;
-    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1.2s ease, visibility 1.2s ease;
+    will-change: opacity;
   }
 
-  @media screen and (min-width: 750px) {
-    .duma-hero__slide-inner,
-    .duma-hero__slide-inner--single {
-      height: var(--duma-hero-height-desktop);
-    }
+  .duma-hero__slide.is-active {
+    opacity: 1;
+    visibility: visible;
   }
 
   .duma-hero__media,
   .duma-hero__media-mobile,
-  .duma-hero__media-desktop {
+  .duma-hero__media-desktop,
+  .duma-hero__media-only {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -159,8 +126,11 @@
     .duma-hero__media-desktop { display: block; }
   }
 
-  .duma-hero__media-only {
-    display: block;
+  .duma-hero__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0) 32%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.16) 100%);
+    z-index: 1;
   }
 
   .duma-hero__wordmark-wrap {
@@ -170,45 +140,119 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
+    gap: 1.15rem;
     text-align: center;
     padding: 0 1.5rem;
     z-index: 2;
-    pointer-events: none;
   }
 
   .duma-hero__wordmark {
-    margin: 0;
     color: #fff;
     font-family: var(--font-duma-display, var(--font-heading--family));
-    font-weight: 400;
+    font-weight: 500;
     font-style: normal;
-    font-size: clamp(3rem, 9vw, 7.5rem);
+    font-size: clamp(4.5rem, 12vw, 11.5rem);
     line-height: 1;
-    letter-spacing: 0;
-    text-transform: none;
+    letter-spacing: 0.01em;
+    text-shadow: 0 2px 30px rgba(0, 0, 0, 0.18);
   }
 
   .duma-hero__subline {
-    margin: 0;
     color: #fff;
-    font-family: var(--font-duma-section, var(--font-subheading--family));
-    font-size: clamp(0.875rem, 1.2vw, 1.125rem);
+    font-family: var(--font-duma-ui, var(--font-body--family));
+    font-size: clamp(0.8125rem, 1vw, 0.9375rem);
+    font-weight: 500;
     letter-spacing: 0.18em;
     text-transform: uppercase;
   }
 
   .duma-hero__cta {
-    margin-top: 0.5rem;
+    margin-top: 0.35rem;
     color: #fff;
     font-family: var(--font-duma-ui, var(--font-body--family));
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
+    font-weight: 500;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    padding-bottom: 4px;
-    border-bottom: 1px solid #fff;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.85);
+    transition: border-color 0.3s ease;
+  }
+
+  .duma-hero__slide:hover .duma-hero__cta {
+    border-color: #fff;
+  }
+
+  .duma-hero__dots {
+    position: absolute;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 11px;
+    z-index: 4;
+  }
+
+  .duma-hero__dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.45);
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+
+  .duma-hero__dot.is-active {
+    background: #fff;
+    transform: scale(1.25);
+  }
+
+  @media screen and (max-width: 680px) {
+    .duma-hero__wordmark { font-size: clamp(3.5rem, 16vw, 4rem); }
   }
 {% endstylesheet %}
+
+<script>
+  (function () {
+    var root = document.getElementById('DumaHero-{{ section.id }}');
+    if (!root) return;
+
+    var slides = Array.prototype.slice.call(root.querySelectorAll('[data-duma-hero-slide]'));
+    var dots = Array.prototype.slice.call(root.querySelectorAll('.duma-hero__dot'));
+    if (slides.length < 2) return;
+
+    var current = 0;
+    var delay = parseInt(root.getAttribute('data-autoplay'), 10) || 0;
+    var timer = null;
+
+    function go(n) {
+      current = (n + slides.length) % slides.length;
+      slides.forEach(function (s, i) { s.classList.toggle('is-active', i === current); });
+      dots.forEach(function (d, i) { d.classList.toggle('is-active', i === current); });
+    }
+
+    function start() {
+      if (!delay) return;
+      stop();
+      timer = setInterval(function () { go(current + 1); }, delay);
+    }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+    dots.forEach(function (d) {
+      d.addEventListener('click', function (e) {
+        e.preventDefault();
+        go(parseInt(d.getAttribute('data-index'), 10));
+        start();
+      });
+    });
+
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', start);
+    start();
+  })();
+</script>
 
 {% schema %}
 {
@@ -264,13 +308,14 @@
   "settings": [
     {
       "type": "range",
-      "id": "height_desktop",
-      "label": "Desktop height",
+      "id": "min_height",
+      "label": "Minimum height",
+      "info": "Hero fills the viewport (100vh) but never shrinks below this.",
       "min": 480,
       "max": 1000,
-      "step": 8,
+      "step": 10,
       "unit": "px",
-      "default": 808
+      "default": 660
     },
     {
       "type": "color_scheme",
@@ -296,14 +341,14 @@
       "max": 10,
       "step": 1,
       "unit": "s",
-      "default": 5,
+      "default": 6,
       "visible_if": "{{ section.settings.autoplay }}"
     },
     {
       "type": "checkbox",
-      "id": "show_arrows",
-      "label": "Show arrows",
-      "default": false
+      "id": "show_dots",
+      "label": "Show pagination dots",
+      "default": true
     }
   ],
   "presets": [
