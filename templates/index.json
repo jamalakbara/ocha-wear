@@ -15,14 +15,18 @@
         "slide_1": {
           "type": "_duma-hero-slide",
           "settings": {
+            "image": "shopify://shop_images/look-studio-1bRwJhXhugM-unsplash_2.jpg",
             "wordmark": "ocha wear",
             "subline": "OUT NOW — NEW ARRIVALS",
             "cta_label": "SHOP NOW",
             "link": "shopify://collections/all"
-          }
+          },
+          "blocks": {}
         }
       },
-      "block_order": ["slide_1"],
+      "block_order": [
+        "slide_1"
+      ],
       "settings": {
         "height_desktop": 808,
         "color_scheme": "scheme-6",
@@ -40,7 +44,8 @@
             "label": "OUTERWEARS",
             "cta_label": "SHOP NOW →",
             "link": "shopify://collections/all"
-          }
+          },
+          "blocks": {}
         },
         "tile_dresses": {
           "type": "_duma-category-tile",
@@ -48,7 +53,8 @@
             "label": "DRESSES",
             "cta_label": "SHOP NOW →",
             "link": "shopify://collections/all"
-          }
+          },
+          "blocks": {}
         },
         "tile_bottoms": {
           "type": "_duma-category-tile",
@@ -56,7 +62,8 @@
             "label": "BOTTOMS",
             "cta_label": "SHOP NOW →",
             "link": "shopify://collections/all"
-          }
+          },
+          "blocks": {}
         },
         "tile_tops": {
           "type": "_duma-category-tile",
@@ -64,10 +71,16 @@
             "label": "TOPS",
             "cta_label": "SHOP NOW →",
             "link": "shopify://collections/all"
-          }
+          },
+          "blocks": {}
         }
       },
-      "block_order": ["tile_outerwears", "tile_dresses", "tile_bottoms", "tile_tops"],
+      "block_order": [
+        "tile_outerwears",
+        "tile_dresses",
+        "tile_bottoms",
+        "tile_tops"
+      ],
       "settings": {
         "heading": "",
         "tile_height": 495,
@@ -77,8 +90,6 @@
     },
     "hero_two_up": {
       "type": "hero",
-      "blocks": {},
-      "block_order": [],
       "settings": {
         "media_type_1": "image",
         "media_type_2": "image",
@@ -86,6 +97,7 @@
         "custom_mobile_media": false,
         "media_type_1_mobile": "image",
         "media_type_2_mobile": "image",
+        "link": "",
         "open_in_new_tab": false,
         "content_direction": "row",
         "vertical_on_mobile": true,
@@ -100,7 +112,7 @@
         "section_height_custom": 65,
         "color_scheme": "scheme-1",
         "toggle_overlay": false,
-        "overlay_color": "#00000000",
+        "overlay_color": "rgba(0,0,0,0)",
         "overlay_style": "solid",
         "gradient_direction": "to top",
         "blurred_reflection": false,
@@ -113,6 +125,7 @@
       "type": "duma-lookbook",
       "settings": {
         "caption": "ocha Escape 25",
+        "link": "",
         "height_desktop": 650,
         "color_scheme": "scheme-1"
       }
@@ -180,7 +193,9 @@
               "blocks": {}
             }
           },
-          "block_order": ["heading"]
+          "block_order": [
+            "heading"
+          ]
         },
         "static-product-card": {
           "type": "_product-card",
@@ -246,6 +261,7 @@
                 "overlay_color": "#00000026",
                 "overlay_style": "solid",
                 "gradient_direction": "to top",
+                "link": "",
                 "open_in_new_tab": false,
                 "padding-block-start": 8,
                 "padding-block-end": 0,
@@ -301,10 +317,16 @@
                   "blocks": {}
                 }
               },
-              "block_order": ["title", "price"]
+              "block_order": [
+                "title",
+                "price"
+              ]
             }
           },
-          "block_order": ["gallery", "info"]
+          "block_order": [
+            "gallery",
+            "info"
+          ]
         }
       },
       "settings": {
@@ -329,8 +351,6 @@
     },
     "lifestyle_banner": {
       "type": "hero",
-      "blocks": {},
-      "block_order": [],
       "settings": {
         "media_type_1": "image",
         "media_type_2": "image",
@@ -338,6 +358,7 @@
         "custom_mobile_media": false,
         "media_type_1_mobile": "image",
         "media_type_2_mobile": "image",
+        "link": "",
         "open_in_new_tab": false,
         "content_direction": "row",
         "vertical_on_mobile": true,
@@ -352,7 +373,7 @@
         "section_height_custom": 70,
         "color_scheme": "scheme-1",
         "toggle_overlay": false,
-        "overlay_color": "#00000000",
+        "overlay_color": "rgba(0,0,0,0)",
         "overlay_style": "solid",
         "gradient_direction": "to top",
         "blurred_reflection": false,
