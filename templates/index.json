@@ -195,7 +195,7 @@
       "type": "duma-atelier-banner",
       "settings": {
         "image": "shopify://shop_images/mattia-occhi-5-JxLWcpRz8-unsplash_1.jpg",
-        "cta_label": "Explore The Atelier",
+        "cta_label": "",
         "cta_link": "shopify://collections/all",
         "height": 720,
         "color_scheme": "scheme-1"
