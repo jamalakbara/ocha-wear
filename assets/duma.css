@@ -290,12 +290,12 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 }
 
 /* Vendor — Bodoni 13px/600, Title — Bodoni 24px/600 tight */
-.template-product .product-details .text-block--vendor_PDPDuma p {
+.template-product .product-details :is(.text-block--vendor_PDPDuma, [class*="__vendor_PDPDuma"]) p {
   font-size: 13px;
   font-weight: 600;
 }
 
-.template-product .product-details .text-block--title_PDPDuma p {
+.template-product .product-details :is(.text-block--title_PDPDuma, [class*="__title_PDPDuma"]) p {
   font-size: 24px;
   font-weight: 600;
   line-height: 1.18;
@@ -423,7 +423,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 }
 
 /* Quantity label text block — 17px */
-.template-product .product-details .text-block--qty_label_PDPDuma p {
+.template-product .product-details :is(.text-block--qty_label_PDPDuma, [class*="__qty_label_PDPDuma"]) p {
   font-size: 17px;
 }
 
@@ -468,13 +468,13 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 }
 
 /* Wishlist link — centered uppercase, brown on hover */
-.template-product .product-details .text-block--wishlist_PDPDuma p {
+.template-product .product-details :is(.text-block--wishlist_PDPDuma, [class*="__wishlist_PDPDuma"]) p {
   font-size: 13px;
   cursor: pointer;
   transition: color 0.25s ease;
 }
 
-.template-product .product-details .text-block--wishlist_PDPDuma p:hover {
+.template-product .product-details :is(.text-block--wishlist_PDPDuma, [class*="__wishlist_PDPDuma"]) p:hover {
   color: #543425;
 }
 
@@ -650,7 +650,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
    "Please Wait.." loader + end-of-collection marker. */
 
 /* Collection title — Bodoni 30px/500, .12em tracking */
-.template-collection .text-block--title_PLPDuma h1 {
+.template-collection :is(.text-block--title_PLPDuma, [class*="__title_PLPDuma"]) h1 {
   font-family: var(--font-duma-display, var(--font-heading--family));
   font-size: 30px;
   font-weight: 500;
@@ -927,7 +927,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 }
 
 /* Title — Bodoni 14px/500 uppercase */
-.template-collection .product-grid .text-block--card_title_PLPDuma {
+.template-collection .product-grid :is(.text-block--card_title_PLPDuma, [class*="__card_title_PLPDuma"]) {
   font-family: var(--font-duma-display, var(--font-heading--family));
   font-size: 14px;
   font-weight: 500;
@@ -1057,4 +1057,212 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 .duma-plp-loader.show,
 .duma-plp-end.show {
   display: block;
+}
+
+/* ---------- 12. Collections index — pixel spec ----------
+   Reference: design bundle "ocha wear Collections.html".
+   Centered Bodoni "All Collections" title (96/70 whitespace band),
+   full-bleed 3-column grid with 3px gutters and 3px side insets,
+   4:5 tiles with bottom legibility scrim, brown hover tint, slow
+   image zoom, centered Bodoni label with growing underline, and a
+   hover-revealed "View Products" arrow CTA. */
+
+/* Page title band — 96px top / 70px bottom, centered */
+.template-list-collections :is(.text-block--title_CollListDuma, [class*="__title_CollListDuma"]) {
+  padding: 96px 46px 70px;
+}
+
+.template-list-collections :is(.text-block--title_CollListDuma, [class*="__title_CollListDuma"]) h1 {
+  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #454545;
+  margin: 0;
+}
+
+/* Grid — 3px side insets to match the 3px gutters; 90px gap to footer */
+.template-list-collections .section-resource-list .resource-list--grid {
+  padding-inline: 3px;
+}
+
+.template-list-collections .section-resource-list {
+  padding-bottom: 90px;
+}
+
+/* Tile shell */
+.template-list-collections .collection-card {
+  position: relative;
+  overflow: hidden;
+  background: #efece6;
+}
+
+/* Design has no card lift/scale — the photo zooms instead */
+.card-hover-effect-lift.template-list-collections .collection-card:hover,
+.card-hover-effect-scale.template-list-collections .collection-card:hover {
+  transform: none;
+}
+
+.card-hover-effect-subtle-zoom.template-list-collections .collection-card:hover .collection-card__image {
+  transform: none;
+}
+
+.template-list-collections .collection-card__inner {
+  position: relative;
+}
+
+/* Slow zoom on the photo */
+.template-list-collections .collection-card__image {
+  overflow: hidden;
+}
+
+.template-list-collections .collection-card__image .resource-image__image {
+  transition: transform 0.9s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+.template-list-collections .collection-card:hover .collection-card__image .resource-image__image {
+  transform: scale(1.06);
+}
+
+/* Brown tint fades in on hover */
+.template-list-collections .collection-card__inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: rgba(84, 52, 37, 0);
+  transition: background 0.45s ease;
+}
+
+.template-list-collections .collection-card:hover .collection-card__inner::before {
+  background: rgba(84, 52, 37, 0.3);
+}
+
+/* Legibility scrim from the bottom — always on, deepens on hover */
+.template-list-collections .collection-card__inner::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 62%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(28, 18, 12, 0.62) 0%,
+    rgba(28, 18, 12, 0.24) 38%,
+    rgba(28, 18, 12, 0) 100%
+  );
+  opacity: 0.9;
+  transition: opacity 0.45s ease;
+}
+
+.template-list-collections .collection-card:hover .collection-card__inner::after {
+  opacity: 1;
+}
+
+/* Content sits above scrim, pinned bottom-center */
+.template-list-collections .collection-card--image-bg .collection-card__content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  padding: 0 24px 40px;
+  row-gap: 0;
+  text-align: center;
+}
+
+/* Collection label — Bodoni 25px/500, .13em, white, growing underline */
+.template-list-collections :is(.text-block--card_title_CollDuma, [class*="__card_title_CollDuma"]) p {
+  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-weight: 500;
+  font-size: 25px;
+  line-height: 1.1;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.28);
+  margin: 0;
+}
+
+.template-list-collections :is(.text-block--card_title_CollDuma, [class*="__card_title_CollDuma"]) p::after {
+  content: "";
+  display: block;
+  width: 26px;
+  height: 1px;
+  margin: 15px auto 0;
+  background: rgba(255, 255, 255, 0.7);
+  transition: width 0.45s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+.template-list-collections .collection-card:hover :is(.text-block--card_title_CollDuma, [class*="__card_title_CollDuma"]) p::after {
+  width: 56px;
+}
+
+/* "View Products" CTA — hidden until hover, slides up with arrow */
+.template-list-collections :is(.text-block--card_cta_CollDuma, [class*="__card_cta_CollDuma"]) p {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin: 18px 0 0;
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.2, 0.6, 0.2, 1), color 0.3s ease;
+}
+
+.template-list-collections :is(.text-block--card_cta_CollDuma, [class*="__card_cta_CollDuma"]) p::after {
+  content: "";
+  width: 16px;
+  height: 8px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 8' fill='none' stroke='%23000' stroke-width='1.3'%3E%3Cpath d='M0 4h14M11 1l3 3-3 3'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 8' fill='none' stroke='%23000' stroke-width='1.3'%3E%3Cpath d='M0 4h14M11 1l3 3-3 3'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform 0.4s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+.template-list-collections .collection-card:hover :is(.text-block--card_cta_CollDuma, [class*="__card_cta_CollDuma"]) p {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.template-list-collections .collection-card:hover :is(.text-block--card_cta_CollDuma, [class*="__card_cta_CollDuma"]) p::after {
+  transform: translateX(4px);
+}
+
+/* Responsive — mirrors the design's 1080/760/520 breakpoints */
+@media screen and (max-width: 1080px) {
+  .template-list-collections :is(.text-block--title_CollListDuma, [class*="__title_CollListDuma"]) {
+    padding: 64px 22px 48px;
+  }
+
+  .template-list-collections .collection-card--image-bg .collection-card__content {
+    padding: 0 18px 32px;
+  }
+
+  .template-list-collections :is(.text-block--card_title_CollDuma, [class*="__card_title_CollDuma"]) p {
+    font-size: 21px;
+  }
+}
+
+/* Theme's container query forces 3-up between 450–749px; design wants 2-up */
+@media screen and (max-width: 749px) {
+  .template-list-collections .section-resource-list .resource-list--grid {
+    grid-template-columns: repeat(2, 1fr);
+    --resource-list-mobile-gap-max: 3px;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .template-list-collections .section-resource-list .resource-list--grid {
+    grid-template-columns: 1fr;
+  }
 }
