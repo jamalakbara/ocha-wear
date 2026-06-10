@@ -136,6 +136,7 @@
     "duma_lookbook": {
       "type": "duma-lookbook",
       "settings": {
+        "image": "shopify://shop_images/artur-voznenko-7fd_Lai1lwU-unsplash.jpg",
         "caption": "Inside the ocha Atelier",
         "link": "",
         "height_desktop": 650,
