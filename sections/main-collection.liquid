@@ -20,6 +20,58 @@
       { once: true }
     );
   }
+
+  // DUMA PLP: "Please Wait.." loader + end-of-collection marker for infinite scroll,
+  // and the visual wishlist heart toggle on product cards.
+  document.addEventListener('DOMContentLoaded', () => {
+    const list = document.querySelector('results-list');
+    const loader = document.getElementById('DumaPlpLoader');
+    const end = document.getElementById('DumaPlpEnd');
+
+    document.addEventListener('click', (event) => {
+      const heart = event.target.closest('.duma-card-heart');
+      if (!heart) return;
+      event.preventDefault();
+      heart.classList.toggle('on');
+    });
+
+    if (!list || !loader || !end) return;
+
+    const lastPageLoaded = () => {
+      const grid = list.querySelector('[ref="grid"]');
+      if (!grid) return true;
+      const last = grid.dataset.lastPage || '1';
+      return last === '1' || Boolean(grid.querySelector(`[data-page="${last}"]`));
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !lastPageLoaded()) loader.classList.add('show');
+        });
+      },
+      { rootMargin: '600px 0px' }
+    );
+
+    const watchSentinel = () => {
+      const sentinel = list.querySelector('[ref="viewMoreNext"]');
+      if (sentinel) observer.observe(sentinel);
+    };
+
+    const update = () => {
+      const done = lastPageLoaded();
+      if (done) loader.classList.remove('show');
+      end.classList.toggle('show', done);
+      watchSentinel();
+    };
+
+    new MutationObserver(() => {
+      loader.classList.remove('show');
+      update();
+    }).observe(list, { childList: true, subtree: true });
+
+    update();
+  });
 {% endjavascript %}
 
 {% comment %} We always render this full-width, as the child blocks have width: page/full settings {% endcomment %}
@@ -75,6 +127,11 @@
     {% endpaginate %}
   </div>
 </results-list>
+
+{% if section.settings.enable_infinite_scroll and collection.products_count > 0 %}
+  <div id="DumaPlpLoader" class="duma-plp-loader" aria-hidden="true">Please Wait..</div>
+  <div id="DumaPlpEnd" class="duma-plp-end" aria-hidden="true">&mdash; End of Collection &mdash;</div>
+{% endif %}
 
 {% schema %}
 {

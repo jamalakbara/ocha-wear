@@ -4,6 +4,34 @@
   assign heading = section.settings.heading
   assign foot_label = section.settings.foot_label
   assign foot_link = section.settings.foot_link
+  assign source = section.settings.source | default: 'collection'
+
+  # Resolve the product list.
+  # "related" uses Shopify product recommendations, "recently_viewed" uses the
+  # visitor's localStorage history resolved through the search endpoint.
+  # Both render empty on first paint and hydrate client-side via a fetch that
+  # re-renders this section with the relevant object populated.
+  assign pick_products = blank
+  assign awaiting_hydration = false
+  if source == 'related' and product != blank
+    if recommendations.performed
+      if recommendations.products_count > 0
+        assign pick_products = recommendations.products
+      else
+        assign pick_products = collection.products
+      endif
+    else
+      assign awaiting_hydration = true
+    endif
+  elsif source == 'recently_viewed'
+    if search.performed
+      assign pick_products = search.results | where: 'object_type', 'product'
+    else
+      assign awaiting_hydration = true
+    endif
+  else
+    assign pick_products = collection.products
+  endif
 -%}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
@@ -12,6 +40,17 @@
   class="duma-picks section section--full-width color-{{ section.settings.color_scheme }}"
   id="DumaPicks-{{ section.id }}"
   data-section-id="{{ section.id }}"
+  {% if awaiting_hydration %}
+    hidden
+  {% endif %}
+  {% if awaiting_hydration and source == 'related' %}
+    data-recommendations-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ max_items }}&intent=related"
+  {% endif %}
+  {% if awaiting_hydration and source == 'recently_viewed' %}
+    data-recently-viewed-url="{{ routes.search_url }}"
+    data-max-items="{{ max_items }}"
+    {% if product != blank %}data-current-product-id="{{ product.id }}"{% endif %}
+  {% endif %}
 >
   {%- if heading != blank -%}
     <h2 class="duma-picks__heading">{{ heading }}</h2>
@@ -26,88 +65,11 @@
     </button>
 
     <div class="duma-picks__track" data-duma-track>
-      {%- if collection != blank and collection.products.size > 0 -%}
-        {%- for product in collection.products limit: max_items -%}
-          {%- liquid
-            assign variant = product.selected_or_first_available_variant
-            assign on_sale = false
-            if product.compare_at_price_max > product.price
-              assign on_sale = true
-            endif
-            assign primary = product.featured_media
-            assign alt_media = product.media[1]
-            assign pick_form_id = 'DumaPickForm-' | append: section.id | append: '-' | append: product.id
-          -%}
-          <div class="duma-pick">
-            <a class="duma-pick__imgwrap" href="{{ product.url }}" data-duma-card-link>
-              {%- unless product.available -%}
-                <span class="duma-pick__badge duma-pick__badge--sold">Sold out</span>
-              {%- elsif on_sale -%}
-                <span class="duma-pick__badge">On sale</span>
-              {%- elsif product.tags contains 'new' -%}
-                <span class="duma-pick__badge">New</span>
-              {%- endunless -%}
-
-              {%- if primary != blank -%}
-                <img
-                  class="duma-pick__photo duma-pick__photo--primary"
-                  src="{{ primary | image_url: width: 800 }}"
-                  srcset="{{ primary | image_url: width: 400 }} 400w, {{ primary | image_url: width: 800 }} 800w"
-                  sizes="(min-width: 750px) 24vw, 60vw"
-                  alt="{{ primary.alt | escape | default: product.title }}"
-                  loading="lazy"
-                  width="{{ primary.preview_image.width }}"
-                  height="{{ primary.preview_image.height }}"
-                >
-              {%- else -%}
-                {{ 'product-1' | placeholder_svg_tag: 'duma-pick__photo duma-pick__photo--primary' }}
-              {%- endif -%}
-
-              {%- if alt_media != blank -%}
-                <img
-                  class="duma-pick__photo duma-pick__photo--alt"
-                  src="{{ alt_media | image_url: width: 800 }}"
-                  srcset="{{ alt_media | image_url: width: 400 }} 400w, {{ alt_media | image_url: width: 800 }} 800w"
-                  sizes="(min-width: 750px) 24vw, 60vw"
-                  alt=""
-                  loading="lazy"
-                  width="{{ alt_media.preview_image.width }}"
-                  height="{{ alt_media.preview_image.height }}"
-                >
-              {%- endif -%}
-            </a>
-
-            <div class="duma-pick__info">
-              <a class="duma-pick__name" href="{{ product.url }}" data-duma-card-link>{{ product.title }}</a>
-              <div class="duma-pick__price">
-                {%- if on_sale -%}
-                  <span class="duma-pick__was">{{ product.compare_at_price_max | money }}</span>
-                  <span class="duma-pick__now">{{ product.price | money }}</span>
-                {%- else -%}
-                  <span>{{ product.price | money }}</span>
-                {%- endif -%}
-              </div>
-
-              {%- if product.available -%}
-                <product-form-component
-                  class="duma-pick__form"
-                  data-section-id="{{ section.id }}"
-                  data-product-id="{{ product.id }}"
-                  data-product-url="{{ product.url }}"
-                  on:submit="/handleSubmit"
-                >
-                  {%- form 'product', product, id: pick_form_id, data-type: 'add-to-cart-form' -%}
-                    <input type="hidden" name="id" ref="variantId" value="{{ variant.id }}">
-                    <button type="submit" name="add" class="duma-pick__add">Add to Bag</button>
-                  {%- endform -%}
-                </product-form-component>
-              {%- else -%}
-                <button type="button" class="duma-pick__add" disabled>Notify Me</button>
-              {%- endif -%}
-            </div>
-          </div>
+      {%- if pick_products != blank and pick_products.size > 0 -%}
+        {%- for pick_product in pick_products limit: max_items -%}
+          {% render 'duma-pick-card', card_product: pick_product, section_id: section.id %}
         {%- endfor -%}
-      {%- else -%}
+      {%- elsif awaiting_hydration == false -%}
         {%- for i in (1..6) -%}
           <div class="duma-pick">
             <div class="duma-pick__imgwrap">
@@ -137,6 +99,11 @@
     width: 100%;
     margin: 0;
     padding: 66px 0 30px;
+  }
+
+  /* base.css `.section { display: grid }` would beat the UA [hidden] rule */
+  .duma-picks[hidden] {
+    display: none !important;
   }
 
   .duma-picks__heading {
@@ -357,7 +324,6 @@
     }
     track.addEventListener('scroll', updateArrows, { passive: true });
     window.addEventListener('resize', updateArrows);
-    updateArrows();
 
     // drag to scroll
     var down = false, startX = 0, startScroll = 0, moved = 0;
@@ -372,9 +338,79 @@
       moved += Math.abs(dx);
       track.scrollLeft = startScroll - dx;
     });
-    track.querySelectorAll('[data-duma-card-link]').forEach(function (link) {
-      link.addEventListener('click', function (e) { if (moved > 6) e.preventDefault(); });
-    });
+
+    function bindCardLinks() {
+      track.querySelectorAll('[data-duma-card-link]').forEach(function (link) {
+        link.addEventListener('click', function (e) { if (moved > 6) e.preventDefault(); });
+      });
+    }
+    bindCardLinks();
+    updateArrows();
+
+    // Hydration: fetch a URL that re-renders this section server-side
+    // (recommendations or search endpoint) and swap the track contents in.
+    // Retries on failure — the theme dev proxy rate-limits (429) when hot
+    // reload and several section renders land at once.
+    function hydrate(url, onSwapped, attempt) {
+      attempt = attempt || 0;
+      fetch(url)
+        .then(function (res) { return res.ok ? res.text() : Promise.reject(res.status); })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var fresh = doc.querySelector('#DumaPicks-{{ section.id }} [data-duma-track]');
+          if (fresh && fresh.children.length) {
+            track.innerHTML = fresh.innerHTML;
+            if (onSwapped) onSwapped();
+            bindCardLinks();
+            updateArrows();
+            root.hidden = false;
+          } else {
+            root.hidden = true;
+          }
+        })
+        .catch(function () {
+          if (attempt < 3) {
+            setTimeout(function () { hydrate(url, onSwapped, attempt + 1); }, 1500 * Math.pow(2, attempt));
+          } else {
+            root.hidden = true;
+          }
+        });
+    }
+
+    // Related-products mode: Shopify product recommendations.
+    var recUrl = root.dataset.recommendationsUrl;
+    if (recUrl) hydrate(recUrl);
+
+    // Recently-viewed mode: resolve localStorage history (written by
+    // recently-viewed-products.js, key "viewedProducts") via the search
+    // endpoint, then restore most-recent-first order.
+    var rvUrl = root.dataset.recentlyViewedUrl;
+    if (rvUrl) {
+      var entries = [];
+      try { entries = JSON.parse(localStorage.getItem('viewedProducts') || '[]'); } catch (_) {}
+      if (!Array.isArray(entries)) entries = [];
+      var currentId = root.dataset.currentProductId || '';
+      var ids = entries
+        .map(function (e) { return e && typeof e === 'object' ? String(e.id) : String(e); })
+        .filter(function (id) { return id && id !== 'null' && id !== currentId; })
+        .slice(0, parseInt(root.dataset.maxItems || '6', 10));
+
+      if (!ids.length) {
+        root.hidden = true;
+      } else {
+        var q = ids.map(function (id) { return 'id:' + id; }).join(' OR ');
+        var url = rvUrl + '?q=' + encodeURIComponent(q) + '&type=product&section_id=' + encodeURIComponent(root.dataset.sectionId);
+        hydrate(url, function () {
+          var byId = {};
+          track.querySelectorAll('.duma-pick[data-product-id]').forEach(function (el) {
+            byId[el.dataset.productId] = el;
+          });
+          ids.forEach(function (id) {
+            if (byId[id]) track.appendChild(byId[id]);
+          });
+        });
+      }
+    }
   })();
 </script>
 
@@ -391,6 +427,27 @@
       "id": "heading",
       "label": "Heading",
       "default": "Our Picks"
+    },
+    {
+      "type": "select",
+      "id": "source",
+      "label": "Products source",
+      "options": [
+        {
+          "value": "collection",
+          "label": "Collection"
+        },
+        {
+          "value": "related",
+          "label": "Related products (product pages)"
+        },
+        {
+          "value": "recently_viewed",
+          "label": "Recently viewed (this visitor)"
+        }
+      ],
+      "default": "collection",
+      "info": "Related products uses Shopify recommendations and falls back to the selected collection. Recently viewed uses the visitor's browsing history and hides when empty."
     },
     {
       "type": "collection",

@@ -106,7 +106,12 @@
             {% endif %}
             ref="menuitem"
           >
-            <span class="menu-list__link-title">{{- link.title -}}</span>
+            <span class="menu-list__link-title">
+              {{- link.title -}}
+              {%- if link.links != blank -%}
+                <span class="svg-wrapper menu-list__caret">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
+              {%- endif -%}
+            </span>
           </a>
           {%- if link.links != blank -%}
             <div class="menu-list__submenu{{ color_scheme_classes }}" ref="submenu[]">
@@ -321,6 +326,26 @@
   }
   [slot='overflow'] .menu-list__link-title {
     padding-inline: 0;
+  }
+
+  .menu-list__caret {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-inline-start: 3px;
+    vertical-align: middle;
+    transition: transform var(--animation-speed, 0.2s) var(--animation-easing, ease);
+  }
+
+  .menu-list__caret svg {
+    width: 9px;
+    height: 9px;
+    display: block;
+    --icon-stroke-width: 1.5;
+  }
+
+  .menu-list__link[aria-expanded='true'] .menu-list__caret {
+    transform: rotate(180deg);
   }
 
   .menu-list__list-item:not([slot='overflow']) {

@@ -1,0 +1,86 @@
+{% doc %}
+  DUMA product card for the picks carousel.
+  Shared by `duma-our-picks` in both collection and recommendations mode.
+
+  @param {object} card_product - The product to render
+  @param {string} section_id - Parent section id (used for form ids)
+{% enddoc %}
+
+{%- liquid
+  assign variant = card_product.selected_or_first_available_variant
+  assign on_sale = false
+  if card_product.compare_at_price_max > card_product.price
+    assign on_sale = true
+  endif
+  assign primary = card_product.featured_media
+  assign alt_media = card_product.media[1]
+  assign pick_form_id = 'DumaPickForm-' | append: section_id | append: '-' | append: card_product.id
+-%}
+<div class="duma-pick" data-product-id="{{ card_product.id }}">
+  <a class="duma-pick__imgwrap" href="{{ card_product.url }}" data-duma-card-link>
+    {%- unless card_product.available -%}
+      <span class="duma-pick__badge duma-pick__badge--sold">Sold out</span>
+    {%- elsif on_sale -%}
+      <span class="duma-pick__badge">On sale</span>
+    {%- elsif card_product.tags contains 'new' -%}
+      <span class="duma-pick__badge">New</span>
+    {%- endunless -%}
+
+    {%- if primary != blank -%}
+      <img
+        class="duma-pick__photo duma-pick__photo--primary"
+        src="{{ primary | image_url: width: 800 }}"
+        srcset="{{ primary | image_url: width: 400 }} 400w, {{ primary | image_url: width: 800 }} 800w"
+        sizes="(min-width: 750px) 24vw, 60vw"
+        alt="{{ primary.alt | escape | default: card_product.title }}"
+        loading="lazy"
+        width="{{ primary.preview_image.width }}"
+        height="{{ primary.preview_image.height }}"
+      >
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'duma-pick__photo duma-pick__photo--primary' }}
+    {%- endif -%}
+
+    {%- if alt_media != blank -%}
+      <img
+        class="duma-pick__photo duma-pick__photo--alt"
+        src="{{ alt_media | image_url: width: 800 }}"
+        srcset="{{ alt_media | image_url: width: 400 }} 400w, {{ alt_media | image_url: width: 800 }} 800w"
+        sizes="(min-width: 750px) 24vw, 60vw"
+        alt=""
+        loading="lazy"
+        width="{{ alt_media.preview_image.width }}"
+        height="{{ alt_media.preview_image.height }}"
+      >
+    {%- endif -%}
+  </a>
+
+  <div class="duma-pick__info">
+    <a class="duma-pick__name" href="{{ card_product.url }}" data-duma-card-link>{{ card_product.title }}</a>
+    <div class="duma-pick__price">
+      {%- if on_sale -%}
+        <span class="duma-pick__was">{{ card_product.compare_at_price_max | money }}</span>
+        <span class="duma-pick__now">{{ card_product.price | money }}</span>
+      {%- else -%}
+        <span>{{ card_product.price | money }}</span>
+      {%- endif -%}
+    </div>
+
+    {%- if card_product.available -%}
+      <product-form-component
+        class="duma-pick__form"
+        data-section-id="{{ section_id }}"
+        data-product-id="{{ card_product.id }}"
+        data-product-url="{{ card_product.url }}"
+        on:submit="/handleSubmit"
+      >
+        {%- form 'product', card_product, id: pick_form_id, data-type: 'add-to-cart-form' -%}
+          <input type="hidden" name="id" ref="variantId" value="{{ variant.id }}">
+          <button type="submit" name="add" class="duma-pick__add">Add to Bag</button>
+        {%- endform -%}
+      </product-form-component>
+    {%- else -%}
+      <button type="button" class="duma-pick__add" disabled>Notify Me</button>
+    {%- endif -%}
+  </div>
+</div>

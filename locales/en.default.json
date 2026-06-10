@@ -117,7 +117,7 @@
     "sign_up": "Sign up",
     "submit": "Submit",
     "view_store_information": "View store information",
-    "sort": "Sort"
+    "sort": "Sort by"
   },
   "blocks": {
     "contact_form": {
@@ -236,7 +236,7 @@
     "product_subtotal": "Product subtotal",
     "product_total": "Product total",
     "product_badge_sold_out": "Sold out",
-    "product_badge_sale": "Sale",
+    "product_badge_sale": "On sale",
     "product_card_placeholder": "Product title",
     "placeholder_image": "Placeholder image",
     "quantity": "Quantity",

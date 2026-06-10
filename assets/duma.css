@@ -3,10 +3,14 @@
  * Scoped narrowly so it can be turned off by removing the asset link.
  */
 
-/* ---------- 1. SALE nav item — red ---------- */
+/* ---------- 1. SALE nav item — red ----------
+   High specificity (0,3,2) so it stays red even when the theme's
+   hover-subdue rule (.menu-list .menu-list__link, 0,2,0) kicks in
+   while another menu item is hovered. */
 .menu a[href*="sale" i],
 .menu__link[href*="sale" i],
-nav a[href*="sale" i] {
+nav.menu-list a.menu-list__link[href*="sale" i],
+nav.menu-list a.menu-list__item[href*="sale" i] {
   color: var(--duma-sale-red, #c8232c);
 }
 
@@ -72,7 +76,7 @@ footer .email-signup__button:not(.button-unstyled) {
   color: #5f3e22;
   border-color: #c9bfb5;
   letter-spacing: 0.2em;
-  padding: 14px 28px;
+  padding: 14px 34px;
 }
 
 footer .email-signup__button:not(.button-unstyled):hover {
@@ -83,6 +87,100 @@ footer .email-signup__button:not(.button-unstyled):hover {
 footer .email-signup__input--underline {
   font-family: var(--font-duma-ui, var(--font-body--family));
   letter-spacing: 0.04em;
+}
+
+/* ---------- 6d. Footer — DUMA reference layout ----------
+   Reference: 4 columns (newsletter wider), serif uppercase column
+   titles, 12px uppercase muted links, stacked underline input +
+   taupe SUBSCRIBE button, centered legal line. */
+
+@media screen and (min-width: 990px) {
+  footer .footer-content {
+    grid-template-columns: 1fr 1fr 1fr 1.3fr;
+    row-gap: 0;
+  }
+}
+
+/* Column titles — serif, uppercase, muted */
+footer .menu__heading,
+footer .footer-content .text-block h6 {
+  font-family: var(--font-duma-section, var(--font-subheading--family));
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #666;
+  margin: 0;
+}
+
+/* Title → links gap (overrides menu_spacing for the heading only) */
+footer .menu:not(:has(.menu__heading--empty)) .details-content {
+  margin-block-start: 26px;
+}
+
+/* Links — Work Sans 12px uppercase, brown on hover */
+footer .menu__item a {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+footer .menu__item a:hover {
+  color: #543425;
+}
+
+/* Newsletter description */
+footer .group-block .text-block p {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #8c8c8c;
+  max-width: 330px;
+  margin: 0;
+}
+
+/* Newsletter form — input full-width, button stacked below */
+footer .email-signup__input-group--underline {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  box-shadow: none;
+  max-width: 360px;
+}
+
+footer .email-signup__input-group--underline .email-signup__input--underline {
+  width: 100%;
+  padding: 10px 2px;
+  border-bottom: 1px solid #e3e3e3;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+footer .email-signup__input-group--underline .email-signup__input--underline:focus {
+  border-color: #543425;
+  outline: none;
+}
+
+footer .email-signup__input--underline::placeholder {
+  color: #b9b9b9;
+}
+
+footer .email-signup__input--underline + .email-signup__button--integrated.email-signup__button--text {
+  align-self: flex-start;
+  margin: 0;
+  padding: 14px 34px;
+}
+
+/* Legal line — centered, near-black */
+footer .footer-content > .text-block p {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: #363636;
+  max-width: none;
 }
 
 /* ---------- 6b. Header logo wordmark — display serif ----------
@@ -132,66 +230,334 @@ body.template-index .section {
   margin-block: 0;
 }
 
-/* ---------- 9. PDP — editorial catalog layout ---------- */
+/* ---------- 9. PDP — editorial 3-zone layout, pixel spec ----------
+   Reference: design bundle "ocha wear PDP.html".
+   Grid 90px rail / fluid gallery / 430px sticky meta, gap 34,
+   max 1640px container with 46px side padding. */
 .template-product .product-information .product-details {
   --color-foreground: #454545;
   color: #454545;
 }
 
-/* Sticky info column under sticky header */
+/* Media : info = 50:50.
+   No-rail products (single image): override the theme's
+   `1fr min(50vw, var(--sidebar-width))` columns. */
+@media screen and (min-width: 750px) {
+  .template-product .product-information .product-information__grid:not(.product-information--media-none).product-information--media-left:not(.product-information__grid--with-rail) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    width: 100%;
+    max-width: 1640px;
+    margin-inline: auto;
+    padding-inline: 46px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  /* Specificity ≥ theme's `.product-information__grid:not(...)...` (0,3,0) sizing rule.
+     Info column = calc(50% - 79px) makes gallery and info equal width
+     (each 50% minus half of rail + gaps: (90 + 34 + 34) / 2 = 79). */
+  .template-product .product-information .product-information__grid--with-rail[data-product-grid-content] {
+    grid-template-columns: 90px minmax(0, 1fr) minmax(0, calc(50% - 79px));
+    column-gap: 34px;
+    max-width: 1640px;
+    margin-inline: auto;
+    padding-inline: 46px;
+  }
+
+  .template-product .product-information.section--full-width .product-information__grid--with-rail.product-information--media-left .product-details {
+    padding-inline-end: 0;
+  }
+}
+
+/* Sticky info column under sticky header (69px header + 24px breathing room) */
 .template-product .product-details.sticky-content--desktop {
-  --sticky-header-offset: 90px;
+  --sticky-header-offset: 93px;
 }
 
 @media screen and (min-width: 750px) {
   .template-product .product-details.sticky-content--desktop > .group-block {
     position: sticky;
-    top: calc(var(--sticky-header-offset, 90px));
+    top: calc(var(--sticky-header-offset, 93px));
   }
 }
 
-/* Vendor / title / price typographic accents */
-/* Title weight — JSON block sets size/color; weight enforced here */
-.template-product .product-details .text-block p {
+/* Vendor — Bodoni 13px/600, Title — Bodoni 24px/600 tight */
+.template-product .product-details .text-block--vendor_PDPDuma p {
+  font-size: 13px;
   font-weight: 600;
 }
 
-.template-product .product-details .text-block:first-of-type p {
-  font-weight: 400;
+.template-product .product-details .text-block--title_PDPDuma p {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.18;
 }
 
-/* Accordion summary — underlined serif uppercase per DUMA spec */
+/* Price — Work Sans 18px muted; sale red + struck compare-at */
+.template-product .product-details product-price {
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.template-product .product-details product-price .price-item--sale {
+  color: #c8232c;
+}
+
+.template-product .product-details product-price .compare-at-price {
+  color: #b3b3b3;
+  font-size: 16px;
+  text-decoration: line-through;
+}
+
+/* Variant picker — "Size:" label + bordered full-width select */
+.template-product .product-details .variant-option--dropdowns label {
+  display: block;
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: #454545;
+  margin-block-end: 13px;
+}
+
+.template-product .product-details .variant-option--dropdowns label::after {
+  content: ':';
+}
+
+.template-product .product-details .variant-option--dropdowns {
+  width: 100%;
+}
+
+.template-product .product-details .variant-option__select-wrapper {
+  position: relative;
+  width: 100%;
+  border: none;
+  box-shadow: none;
+}
+
+.template-product .product-details .variant-option__select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  border: 1px solid #e3e3e3;
+  border-radius: 0;
+  background: #fff;
+  padding: 18px 20px;
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 16px;
+  color: #454545;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.template-product .product-details .variant-option__select:focus {
+  outline: none;
+  border-color: #454545;
+}
+
+.template-product .product-details .variant-option__select-wrapper .icon-caret {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  color: #454545;
+}
+
+/* Colour swatches — 30px circles, ring on active */
+.template-product .product-details product-swatches .variant-option__swatch {
+  width: 30px;
+  height: 30px;
+}
+
+.template-product .product-details product-swatches .variant-option__swatch > * {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+/* Quantity stepper — hairline box, 54×56 buttons, 64px value */
+.template-product .product-details .quantity-selector-wrapper {
+  width: fit-content;
+}
+
+.template-product .product-details .quantity-selector {
+  border: 1px solid #e3e3e3;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+}
+
+.template-product .product-details .quantity-selector .button {
+  width: 54px;
+  height: 56px;
+  border-radius: 0;
+  color: #454545;
+  background: none;
+  transition: background 0.2s ease;
+}
+
+.template-product .product-details .quantity-selector .button:hover {
+  background: #f6f4ef;
+}
+
+.template-product .product-details .quantity-selector input {
+  min-width: 64px;
+  height: 56px;
+  text-align: center;
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 17px;
+  color: #454545;
+  border: none;
+  background: transparent;
+}
+
+/* Quantity label text block — 17px */
+.template-product .product-details .text-block--qty_label_PDPDuma p {
+  font-size: 17px;
+}
+
+/* Buy form stack: 30px between stepper and button */
+.template-product .product-details .product-form-buttons--stacked {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 30px;
+}
+
+/* Add to cart — outlined brown, fills on hover */
+.template-product .product-details .add-to-cart-button {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  border: 1px solid #5f3e22;
+  border-radius: 0;
+  background: #fff;
+  color: #5f3e22;
+  padding-block: 22px;
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.template-product .product-details .add-to-cart-button:hover:not(:disabled) {
+  background: #5f3e22;
+  color: #fff;
+}
+
+.template-product .product-details .add-to-cart-button .add-to-cart-icon {
+  display: none;
+}
+
+/* No express checkout on the editorial PDP */
+.template-product .product-details .accelerated-checkout-block {
+  display: none;
+}
+
+/* Wishlist link — centered uppercase, brown on hover */
+.template-product .product-details .text-block--wishlist_PDPDuma p {
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.template-product .product-details .text-block--wishlist_PDPDuma p:hover {
+  color: #543425;
+}
+
+/* Accordion summary — Bodoni 15px/600, taupe underline, 22px rows */
 .template-product .product-details .accordion .details__header {
   font-family: var(--font-duma-section, var(--font-subheading--family));
-  font-size: 12px;
+  font-size: 15px;
+  font-weight: 600;
   text-transform: uppercase;
   text-decoration: underline;
-  text-underline-offset: 3px;
-  letter-spacing: 0.08em;
-  padding-block: 16px;
+  text-underline-offset: 5px;
+  text-decoration-color: #c9bfb5;
+  letter-spacing: 0.06em;
+  padding-block: 22px;
   color: #454545;
-  font-weight: normal;
 }
 
 .template-product .product-details .accordion .details-content {
   font-family: var(--font-duma-ui, var(--font-body--family));
   color: #454545;
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.75;
+  letter-spacing: 0.005em;
+  padding-block-end: 26px;
 }
 
 .template-product .product-details .accordion {
   --color-border: #e3e3e3;
 }
 
-/* Sticky thumbnail rail */
-.product-thumb-rail {
-  position: sticky;
-  top: 90px;
+/* Em-dash bullets inside accordion lists */
+.template-product .product-details .accordion .details-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  width: 80px;
+  gap: 9px;
+}
+
+.template-product .product-details .accordion .details-content li {
+  position: relative;
+  padding-inline-start: 16px;
+}
+
+.template-product .product-details .accordion .details-content li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: #c9bfb5;
+}
+
+/* Share row */
+.template-product .product-details .product-share {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 30px 0 6px;
+}
+
+.template-product .product-details .product-share__label {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: #666;
+}
+
+.template-product .product-details .product-share__link {
+  display: inline-flex;
+  color: #666;
+  transition: color 0.2s ease;
+}
+
+.template-product .product-details .product-share__link:hover {
+  color: #543425;
+}
+
+.template-product .product-details .product-share__link svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* Sticky thumbnail rail — 90px, 3/4 thumbs, 14px gap */
+.product-thumb-rail {
+  position: sticky;
+  top: 93px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 90px;
   max-height: calc(100vh - 110px);
   overflow-y: auto;
   scrollbar-width: none;
@@ -205,13 +571,13 @@ body.template-index .section {
   position: relative;
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 4;
   padding: 0;
-  background: none;
+  background: #f3f1ec;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: border-color 0.15s ease, opacity 0.15s ease;
-  opacity: 0.6;
+  transition: border-color 0.25s ease, opacity 0.25s ease;
+  opacity: 0.78;
 }
 
 .product-thumb-rail__item:hover,
@@ -251,14 +617,436 @@ body.template-index .section {
 
 /* Constrain any heading tags inside product description HTML */
 .template-product .product-details .accordion .details-content :is(h1, h2, h3, h4, h5, h6) {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: normal;
-  line-height: 1.6;
+  line-height: 1.75;
   margin-block: 0.25em;
 }
 
-/* Price component explicit sizing */
-.template-product .product-details product-price {
-  font-size: 15px;
-  line-height: 1.4;
+/* ---------- 10. PDP — recommendation carousels ----------
+   "You may also like" and "Recently Viewed" both reuse the homepage
+   DUMA Our Picks section (DRY); on the PDP each gets a hairline top
+   border + 46px side insets. */
+.template-product .duma-picks {
+  width: auto;
+  border-top: 1px solid #e3e3e3;
+  margin: 36px 46px 0;
+  padding-block: 54px 8px;
+}
+
+/* ---------- 11. PLP — collection page, pixel spec ----------
+   Reference: design bundle "ocha wear PLP.html".
+   Centered Bodoni title, horizontal filter/sort toolbar with 46px
+   side insets, full-bleed 3-column grid with 2px gutters, centered
+   serif card info, translucent badges, hover heart, infinite-scroll
+   "Please Wait.." loader + end-of-collection marker. */
+
+/* Collection title — Bodoni 30px/500, .12em tracking */
+.template-collection .text-block--title_PLPDuma h1 {
+  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #454545;
+  margin: 0;
+}
+
+/* Toolbar — Work Sans 12px uppercase, 46px side insets */
+@media screen and (min-width: 750px) {
+  .template-collection .facets--horizontal {
+    padding: 0 46px 26px;
+  }
+
+  /* Left cluster: 34px between filter toggles */
+  .template-collection .facets--horizontal .facets__filters-wrapper {
+    column-gap: 34px;
+  }
+
+  /* Right cluster: 30px between item count and Sort by */
+  .template-collection .facets--horizontal .sorting-filter {
+    margin-inline-start: 30px;
+  }
+}
+
+.template-collection .facets--horizontal .facets__summary {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #454545;
+  transition: color 0.2s ease;
+}
+
+/* No dimming of sibling toggles; brown on hover instead */
+.template-collection .facets__filters-wrapper:hover .facets__summary,
+.template-collection .facets__filters-wrapper:has(.facets__panel[open]) .facets__summary {
+  opacity: 1;
+}
+
+.template-collection .facets--horizontal .facets__summary:hover {
+  color: #543425;
+}
+
+.template-collection .facets__summary .icon-caret {
+  width: 9px;
+  height: 9px;
+  color: currentColor;
+}
+
+.template-collection .facets--horizontal .products-count-wrapper {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: #666;
+}
+
+/* Clear all — underlined brown */
+.template-collection .facets__clear-all-link {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #543425;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Filter dropdown panel — white, hairline border, soft shadow */
+@media screen and (min-width: 750px) {
+  .template-collection .facets--horizontal .facets__panel-content {
+    top: calc(100% + 8px);
+    min-width: 180px;
+    padding: 10px 0;
+    border: 1px solid #e3e3e3;
+    border-radius: 0;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.1);
+  }
+
+  .template-collection .facets--horizontal .facets__inputs-wrapper {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.template-collection .facets__panel-content .facets__inputs-list {
+  gap: 0;
+}
+
+.template-collection .facets__panel-content .facets__inputs-list-item {
+  transition: background 0.15s ease;
+}
+
+.template-collection .facets__panel-content .facets__inputs-list-item:hover {
+  background: #f7f5f0;
+}
+
+/* Checkbox option rows — 12px uppercase, 13px square box */
+.template-collection .facets__panel-content .checkbox {
+  --checkbox-size: 13px;
+  --checkbox-label-padding: 10px;
+
+  width: 100%;
+  padding: 9px 18px;
+}
+
+.template-collection .facets__panel-content .checkbox__label-text {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #666;
+  line-height: 1.2;
+  transition: color 0.15s ease;
+}
+
+.template-collection .facets__panel-content .facets__inputs-list-item:hover .checkbox__label-text {
+  color: #454545;
+}
+
+.template-collection .facets__panel-content .checkbox .icon-checkmark {
+  border: 1px solid #c4bdb1;
+  border-radius: 0;
+}
+
+.template-collection .facets__panel-content .checkbox__input:checked + .checkbox__label .icon-checkmark {
+  background-color: #5f3e22;
+  border-color: #5f3e22;
+}
+
+/* Short-value filters (sizes) render as pills — restyle into rows */
+@media screen and (min-width: 750px) {
+  .template-collection .facets__panel-content .facets__inputs-list--grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: auto;
+  }
+}
+
+.template-collection .facets__panel-content .facets__pill-wrapper {
+  width: 100%;
+}
+
+.template-collection .facets__panel-content .facets__pill-label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 18px;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: none;
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.template-collection .facets__panel-content .facets__pill-label::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 13px;
+  height: 13px;
+  border: 1px solid #c4bdb1;
+  background-color: #fff;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 9px 9px;
+}
+
+.template-collection .facets__panel-content .facets__pill-input:checked + .facets__pill-label::before {
+  border-color: #5f3e22;
+  background-color: #5f3e22;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6.5 5 9.5 10 3' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
+}
+
+.template-collection .facets__panel-content .facets__pill-input:checked + .facets__pill-label {
+  color: #454545;
+}
+
+/* Sort dropdown — right-anchored panel, brown active option */
+.template-collection .sorting-filter__options {
+  border: 1px solid #e3e3e3;
+  border-radius: 0;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.1);
+  min-width: 180px;
+}
+
+@media screen and (min-width: 750px) {
+  .template-collection .sorting-filter__options {
+    top: calc(100% + 8px);
+  }
+}
+
+.template-collection .sorting-filter__options-inner {
+  padding: 10px 0;
+}
+
+.template-collection .sorting-filter__option {
+  grid-template-columns: 1fr;
+  min-width: 180px;
+  padding: 9px 18px;
+  transition: background 0.15s ease;
+}
+
+.template-collection .sorting-filter__option:hover {
+  background: #f7f5f0;
+  border-radius: 0;
+}
+
+.template-collection .sorting-filter__checkmark {
+  display: none;
+}
+
+.template-collection .sorting-filter__label {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.template-collection .sorting-filter__input:checked + .sorting-filter__checkmark + .sorting-filter__label {
+  color: #543425;
+  font-weight: 500;
+}
+
+/* Product grid — exactly 3 columns on desktop, 1 on small phones.
+   Specificity (0,3,0) to beat the section's repeat(auto-fill) rule. */
+@media screen and (min-width: 750px) {
+  .template-collection .product-grid.product-grid--grid {
+    --product-grid-columns-desktop: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .template-collection .product-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card — centered info */
+.template-collection .product-grid product-card {
+  position: relative;
+  text-align: center;
+}
+
+/* Status badge — translucent white pill, top-left 18px */
+.template-collection .product-grid .product-badges--top-left {
+  top: 18px;
+  left: 18px;
+}
+
+.template-collection .product-grid .product-badges__badge {
+  background: rgba(255, 255, 255, 0.72);
+  color: #363636;
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 0;
+}
+
+/* Sold out — grey text (scheme-5 = sold-out badge scheme) */
+.template-collection .product-grid .product-badges__badge.color-scheme-5 {
+  color: #9a9a9a;
+}
+
+/* Title — Bodoni 14px/500 uppercase */
+.template-collection .product-grid .text-block--card_title_PLPDuma {
+  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #454545;
+  margin-block-end: 11px;
+}
+
+/* Price — Work Sans 14px muted; sale red + struck compare-at */
+.template-collection .product-grid product-card .price {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 14px;
+  color: #666;
+}
+
+.template-collection .product-grid product-card .price-item--sale.price {
+  color: #c8232c;
+}
+
+.template-collection .product-grid product-card .compare-at-price {
+  color: #b3b3b3;
+  font-size: 13px;
+  text-decoration: line-through;
+}
+
+/* Swatch dots — 13px circles, centered, 8px apart */
+.template-collection .product-grid product-card product-swatches {
+  justify-content: center;
+}
+
+.template-collection .product-grid product-card .variant-option--swatches {
+  gap: 8px;
+  justify-content: center;
+}
+
+.template-collection .product-grid product-card .variant-option__swatch {
+  width: 13px;
+  height: 13px;
+}
+
+.template-collection .product-grid product-card .variant-option__swatch > * {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid #cfcabf;
+}
+
+.template-collection .product-grid product-card .variant-option__swatch:has(input:checked) {
+  outline: 1px solid #454545;
+  outline-offset: 2px;
+  border-radius: 50%;
+}
+
+/* Design uses a wishlist heart on hover, not quick add */
+.template-collection .product-grid .quick-add {
+  display: none;
+}
+
+/* Wishlist heart — top-right, fades in on hover (visual only) */
+.duma-card-heart {
+  display: none;
+}
+
+.template-collection .product-grid .duma-card-heart {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.template-collection .product-grid product-card:hover .duma-card-heart,
+.template-collection .product-grid .duma-card-heart:focus-visible,
+.template-collection .product-grid .duma-card-heart.on {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.duma-card-heart svg {
+  width: 19px;
+  height: 19px;
+  stroke: #363636;
+  fill: none;
+  stroke-width: 1.4;
+}
+
+.duma-card-heart.on svg {
+  fill: #363636;
+}
+
+/* Infinite-scroll loader + end-of-collection marker */
+.duma-plp-loader {
+  display: none;
+  text-align: center;
+  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #a8a29a;
+  padding: 46px 0 30px;
+}
+
+.duma-plp-end {
+  display: none;
+  text-align: center;
+  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c0bab0;
+  padding: 40px 0 20px;
+}
+
+.duma-plp-loader.show,
+.duma-plp-end.show {
+  display: block;
 }
