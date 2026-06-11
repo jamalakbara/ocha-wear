@@ -143,7 +143,7 @@ product-card {
    or as stacked imgs.
 */
 product-card .card-gallery slideshow-slide {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.45s ease;
 }
 
 product-card:hover .card-gallery slideshow-slide[slide-index='0'] {
