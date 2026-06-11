@@ -15,7 +15,7 @@
         "duma_hero_slide_fpVkXD": {
           "type": "duma-hero-slide",
           "settings": {
-            "image": "shopify://shop_images/look-studio-1bRwJhXhugM-unsplash_2.jpg",
+            "image": "shopify://shop_images/hero-banner.png",
             "wordmark": "SUMMER BLOOM",
             "subline": "",
             "cta_label": "SHOP NOW",
@@ -25,7 +25,7 @@
         "slide_1": {
           "type": "duma-hero-slide",
           "settings": {
-            "image": "shopify://shop_images/look-studio-qG96I-vRLtM-unsplash_1.jpg",
+            "image": "shopify://shop_images/hero-banner.png",
             "wordmark": "Denver",
             "subline": "OUT NOW — NEW ARRIVALS",
             "cta_label": "SHOP NOW",
@@ -67,7 +67,7 @@
         "tile_outerwears": {
           "type": "category_tile",
           "settings": {
-            "image": "shopify://shop_images/imana-F0v370QbWpg-unsplash_1.jpg",
+            "image": "shopify://shop_images/product-2.png",
             "label": "TOPS",
             "cta_label": "SHOP NOW →",
             "link": "shopify://collections/tops"
@@ -76,7 +76,7 @@
         "tile_dresses": {
           "type": "category_tile",
           "settings": {
-            "image": "shopify://shop_images/imana-Mk7NKce_lec-unsplash.jpg",
+            "image": "shopify://shop_images/product-1.png",
             "label": "BOTTOMS",
             "cta_label": "SHOP NOW →",
             "link": "shopify://collections/bottoms"
@@ -85,7 +85,7 @@
         "tile_bottoms": {
           "type": "category_tile",
           "settings": {
-            "image": "shopify://shop_images/imana-2q8MaJjB8T8-unsplash_1.jpg",
+            "image": "shopify://shop_images/product-3.png",
             "label": "DRESSES",
             "cta_label": "SHOP NOW →",
             "link": "shopify://collections/all"
@@ -94,7 +94,7 @@
         "tile_tops": {
           "type": "category_tile",
           "settings": {
-            "image": "shopify://shop_images/imana-k_eNxmvjSIo-unsplash_1.jpg",
+            "image": "shopify://shop_images/product-2.png",
             "label": "SETS",
             "cta_label": "SHOP NOW →",
             "link": "shopify://collections/all"
@@ -124,7 +124,7 @@
         "category_tile_JYybhA": {
           "type": "category_tile",
           "settings": {
-            "image": "shopify://shop_images/jovs-beauty-w_lcJNGfvnw-unsplash.jpg",
+            "image": "shopify://shop_images/collection-feature.png",
             "label": "",
             "cta_label": "",
             "link": "shopify://collections/new-arrivals"
@@ -133,7 +133,7 @@
         "category_tile_3mgfY9": {
           "type": "category_tile",
           "settings": {
-            "image": "shopify://shop_images/ali-pazani-G3fW1KICZco-unsplash.jpg",
+            "image": "shopify://shop_images/collection-banner.png",
             "label": "",
             "cta_label": "",
             "link": "shopify://collections/all"
@@ -193,7 +193,7 @@
     "duma_lookbook": {
       "type": "duma-lookbook",
       "settings": {
-        "image": "shopify://shop_images/artur-voznenko-7fd_Lai1lwU-unsplash.jpg",
+        "image": "shopify://shop_images/collection-banner.png",
         "full_width": false,
         "caption": "Inside the ocha Atelier",
         "link": "",
@@ -222,7 +222,8 @@
     "lifestyle_banner": {
       "type": "duma-atelier-banner",
       "settings": {
-        "image": "shopify://shop_images/mattia-occhi-5-JxLWcpRz8-unsplash_1.jpg",
+        "image": "shopify://shop_images/collection-banner.png",
+        "image_mobile": "shopify://shop_images/product-1.png",
         "cta_label": "",
         "cta_link": "shopify://collections/all",
         "height": 720,
