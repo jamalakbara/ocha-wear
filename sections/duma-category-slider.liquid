@@ -11,6 +11,20 @@
     else
       assign tile_vw = '25vw'
   endcase
+
+  if mobile_cols == '2'
+    assign mobile_vw = '50vw'
+  else
+    assign mobile_vw = '100vw'
+  endif
+
+  comment
+    Tiles use a fixed aspect ratio on every screen size; the CDN crops
+    images to the same ratio so what you upload is exactly what renders.
+  endcomment
+  assign ratio_parts = section.settings.tile_ratio | default: '3/4' | split: '/'
+  assign ratio_w = ratio_parts[0] | plus: 0
+  assign ratio_h = ratio_parts[1] | plus: 0
 -%}
 
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
@@ -18,7 +32,7 @@
 
 <section
   class="duma-category section section--full-width color-{{ section.settings.color_scheme }}"
-  style="--duma-category-height: {{ section.settings.tile_height }}px; --duma-category-mobile-cols: {{ mobile_cols }}; --duma-category-cols: {{ desktop_cols }};"
+  style="--duma-category-ratio: {{ ratio_w }} / {{ ratio_h }}; --duma-category-mobile-cols: {{ mobile_cols }}; --duma-category-cols: {{ desktop_cols }};"
 >
   {%- if section.settings.heading != blank -%}
     <h2 class="duma-category__heading">{{ section.settings.heading }}</h2>
@@ -35,20 +49,27 @@
         <div class="duma-category__tile" {{ block.shopify_attributes }}>
       {%- endif -%}
         {%- if block.settings.image != blank -%}
+          {%- liquid
+            assign img = block.settings.image
+            assign h_480 = 480 | times: ratio_h | divided_by: ratio_w
+            assign h_800 = 800 | times: ratio_h | divided_by: ratio_w
+            assign h_1200 = 1200 | times: ratio_h | divided_by: ratio_w
+            assign h_1600 = 1600 | times: ratio_h | divided_by: ratio_w
+          -%}
           <img
             class="duma-category__image"
-            src="{{ block.settings.image | image_url: width: 1200 }}"
+            src="{{ img | image_url: width: 1200, height: h_1200, crop: 'center' }}"
             srcset="
-              {{ block.settings.image | image_url: width: 480 }} 480w,
-              {{ block.settings.image | image_url: width: 800 }} 800w,
-              {{ block.settings.image | image_url: width: 1200 }} 1200w,
-              {{ block.settings.image | image_url: width: 1600 }} 1600w
+              {{ img | image_url: width: 480, height: h_480, crop: 'center' }} 480w,
+              {{ img | image_url: width: 800, height: h_800, crop: 'center' }} 800w,
+              {{ img | image_url: width: 1200, height: h_1200, crop: 'center' }} 1200w,
+              {{ img | image_url: width: 1600, height: h_1600, crop: 'center' }} 1600w
             "
-            sizes="(min-width: 750px) {{ tile_vw }}, 100vw"
-            alt="{{ block.settings.image.alt | escape }}"
+            sizes="(min-width: 750px) {{ tile_vw }}, {{ mobile_vw }}"
+            alt="{{ img.alt | escape }}"
             loading="lazy"
-            width="{{ block.settings.image.width }}"
-            height="{{ block.settings.image.height }}"
+            width="1200"
+            height="{{ h_1200 }}"
           >
         {%- else -%}
           {{ 'collection-1' | placeholder_svg_tag: 'duma-category__image' }}
@@ -117,7 +138,7 @@
     position: relative;
     display: block;
     width: 100%;
-    height: var(--duma-category-height);
+    aspect-ratio: var(--duma-category-ratio, 3 / 4);
     overflow: hidden;
     color: #fff;
     text-decoration: none;
@@ -181,7 +202,7 @@
           "type": "image_picker",
           "id": "image",
           "label": "Image",
-          "info": "Portrait photo. Recommended by desktop columns — 4: 720 × 1000px, 3: 960 × 1330px, 2: 1440 × 2000px."
+          "info": "Any size ≥1600px wide. Cropped from the center to the section's tile aspect ratio."
         },
         {
           "type": "text",
@@ -226,14 +247,17 @@
       "default": "4"
     },
     {
-      "type": "range",
-      "id": "tile_height",
-      "label": "Tile height",
-      "min": 320,
-      "max": 800,
-      "step": 5,
-      "unit": "px",
-      "default": 495
+      "type": "select",
+      "id": "tile_ratio",
+      "label": "Tile aspect ratio",
+      "info": "Same shape on every screen size. Images are cropped from the center to match.",
+      "options": [
+        { "value": "2/3", "label": "Portrait 2:3" },
+        { "value": "3/4", "label": "Portrait 3:4" },
+        { "value": "4/5", "label": "Portrait 4:5" },
+        { "value": "1/1", "label": "Square" }
+      ],
+      "default": "3/4"
     },
     {
       "type": "select",

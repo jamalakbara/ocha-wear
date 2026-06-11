@@ -110,7 +110,7 @@
       "settings": {
         "heading": "",
         "desktop_columns": "4",
-        "tile_height": 495,
+        "tile_ratio": "3/4",
         "mobile_columns": "2",
         "color_scheme": "scheme-1",
         "custom_spacing": true,
@@ -148,7 +148,7 @@
       "settings": {
         "heading": "",
         "desktop_columns": "2",
-        "tile_height": 495,
+        "tile_ratio": "3/4",
         "mobile_columns": "2",
         "color_scheme": "",
         "custom_spacing": false,
