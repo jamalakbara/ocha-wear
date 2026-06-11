@@ -284,7 +284,7 @@
   .ds-row > svg, .ds-row .svg-wrapper svg, .ds-row svg:first-of-type {
     width: 25px;
     height: 25px;
-    stroke: #9a9a9a;
+    stroke: #6b6663;
     fill: none;
     stroke-width: 1.4;
     flex: 0 0 auto;
@@ -298,11 +298,11 @@
     font-size: 26px;
     font-weight: 300;
     letter-spacing: 0.005em;
-    color: var(--duma-text, #454545);
+    color: var(--duma-text, #2b2b2b);
     -webkit-appearance: none;
     appearance: none;
   }
-  .ds-input::placeholder { color: #c2c2c2; font-weight: 300; }
+  .ds-input::placeholder { color: #6b6663; font-weight: 300; }
   .ds-input:focus { outline: none; }
   .ds-input::-webkit-search-cancel-button { display: none; }
 
@@ -320,12 +320,12 @@
   .ds-close svg {
     width: 22px;
     height: 22px;
-    stroke: #8a8a8a;
+    stroke: #6b6663;
     stroke-width: 1.4;
     fill: none;
     transition: stroke 0.2s, transform 0.35s ease;
   }
-  .ds-close:hover svg { stroke: var(--duma-text, #454545); transform: rotate(90deg); }
+  .ds-close:hover svg { stroke: var(--duma-text, #2b2b2b); transform: rotate(90deg); }
 
   .ds-empty, .ds-results { display: none; }
   .ds-empty.is-shown, .ds-results.is-shown { display: block; }
@@ -335,26 +335,26 @@
     font-size: 11px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #a3a3a3;
+    color: #6b6663;
   }
   .ds-pop-title { padding-top: 6px; margin-bottom: 20px; }
   .ds-chips { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 50px; }
   .ds-chip {
-    border: 1px solid var(--duma-line, #e3e3e3);
+    border: 1px solid var(--color-divider, #ddd7cf);
     padding: 11px 22px;
     font-family: var(--font-duma-ui, var(--font-body--family));
     font-size: 12.5px;
     letter-spacing: 0.07em;
-    color: var(--duma-text, #454545);
+    color: var(--duma-text, #2b2b2b);
     background: #fff;
     cursor: pointer;
     transition: border-color 0.25s, color 0.25s;
   }
-  .ds-chip:hover { border-color: var(--duma-brown, #543425); color: var(--duma-brown, #543425); }
+  .ds-chip:hover { border-color: var(--color-brand-olive-dark, #5e6844); color: var(--color-brand-olive-dark, #5e6844); }
 
   .ds-trend-title {
     padding-bottom: 15px;
-    border-bottom: 1px solid var(--duma-line, #e3e3e3);
+    border-bottom: 1px solid var(--color-divider, #ddd7cf);
     margin-bottom: 34px;
   }
   .ds-trend-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 34px 24px; }
@@ -366,15 +366,16 @@
     justify-content: space-between;
     gap: 18px;
     padding-bottom: 15px;
-    border-bottom: 1px solid var(--duma-line, #e3e3e3);
+    border-bottom: 1px solid var(--color-divider, #ddd7cf);
     margin-bottom: 34px;
   }
-  .ds-count { font-size: 14px; color: #9d9d9d; letter-spacing: 0.05em; }
+  .ds-count { font-size: 14px; color: #6b6663; letter-spacing: 0.05em; }
   .ds-viewall {
     font-family: var(--font-duma-display, var(--font-heading--family));
-    font-weight: 500;
-    font-size: 17px;
-    color: var(--duma-text, #454545);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--duma-text, #2b2b2b);
     letter-spacing: 0.015em;
     position: relative;
     white-space: nowrap;
@@ -390,9 +391,9 @@
     background: currentColor;
     transition: width 0.3s ease;
   }
-  .ds-viewall:hover { color: var(--duma-brown, #543425); }
+  .ds-viewall:hover { color: var(--color-brand-olive-dark, #5e6844); }
   .ds-viewall:hover::after { width: 100%; }
-  .ds-jtitle { font-family: var(--font-duma-ui, var(--font-body--family)); font-size: 15px; color: #9d9d9d; letter-spacing: 0.05em; }
+  .ds-jtitle { font-family: var(--font-duma-ui, var(--font-body--family)); font-size: 15px; color: #6b6663; letter-spacing: 0.05em; }
 
   .ds-products { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px 24px; }
   .ds-card { display: block; text-decoration: none; }
@@ -400,7 +401,7 @@
     position: relative;
     aspect-ratio: 3 / 4;
     overflow: hidden;
-    background: #f1ede7;
+    background: #eef0e6;
   }
   .ds-card-img img {
     position: absolute;
@@ -412,56 +413,60 @@
   }
   .ds-card:hover .ds-card-img img { transform: scale(1.055); }
   .ds-card-name {
-    font-family: var(--font-duma-display, var(--font-heading--family));
+    font-family: var(--font-duma-ui, var(--font-body--family));
     font-weight: 500;
     font-size: 14px;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    text-transform: none;
     text-align: center;
-    color: var(--duma-text, #454545);
+    color: var(--duma-text, #2b2b2b);
     margin-top: 20px;
     line-height: 1.3;
   }
   .ds-card-price {
     text-align: center;
     margin-top: 9px;
-    font-size: 13.5px;
+    font-size: 15px;
+    font-weight: 700;
     display: flex;
     gap: 10px;
     justify-content: center;
     align-items: baseline;
   }
-  .ds-card-price .now { color: var(--duma-sale-red, #c8232c); }
-  .ds-card-price .was { text-decoration: line-through; color: #b6b6b6; font-size: 12.5px; }
-  .ds-card-price .plain { color: var(--duma-text-muted, #666); }
+  .ds-card-price .now { color: var(--duma-sale-red, #c97070); }
+  .ds-card-price .was { text-decoration: line-through; color: #6b6663; font-size: 12.5px; font-weight: 400; }
+  .ds-card-price .plain { color: var(--duma-text, #2b2b2b); }
 
   .ds-side { display: flex; flex-direction: column; }
   .ds-journal { display: flex; flex-direction: column; gap: 24px; }
   .ds-jitem { display: grid; grid-template-columns: 80px 1fr; gap: 16px; align-items: center; text-decoration: none; }
-  .ds-jimg { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: #f1ede7; }
+  .ds-jimg { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: #eef0e6; }
   .ds-jimg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
   .ds-jitem:hover .ds-jimg img { transform: scale(1.06); }
-  .ds-jtag { font-size: 10px; letter-spacing: 0.17em; text-transform: uppercase; color: #aaa; margin-bottom: 7px; }
+  .ds-jtag { font-size: 10px; letter-spacing: 0.17em; text-transform: uppercase; color: #6b6663; margin-bottom: 7px; }
   .ds-jname {
     font-family: var(--font-duma-section, var(--font-subheading--family));
-    font-weight: 500;
-    font-size: 16px;
-    color: var(--duma-text, #454545);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--duma-text, #2b2b2b);
     line-height: 1.28;
     transition: color 0.2s;
   }
-  .ds-jitem:hover .ds-jname { color: var(--duma-brown, #543425); }
-  .ds-jempty { font-size: 15px; color: #a0a0a0; letter-spacing: 0.02em; padding: 4px 0; }
+  .ds-jitem:hover .ds-jname { color: var(--color-brand-olive-dark, #5e6844); }
+  .ds-jempty { font-size: 15px; color: #6b6663; letter-spacing: 0.02em; padding: 4px 0; }
 
   .ds-none { padding: 18px 0 10px; }
   .ds-none .big {
     font-family: var(--font-duma-section, var(--font-subheading--family));
-    font-size: 24px;
-    color: var(--duma-text, #454545);
-    letter-spacing: 0.02em;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 26px;
+    color: var(--duma-text, #2b2b2b);
+    letter-spacing: -0.01em;
     margin-bottom: 10px;
   }
-  .ds-none .sub { font-size: 13.5px; color: #9d9d9d; letter-spacing: 0.03em; }
+  .ds-none .sub { font-size: 13.5px; color: #6b6663; letter-spacing: 0.03em; }
 
   @media screen and (max-width: 980px) {
     .duma-search-panel { padding: 0 30px 44px; }

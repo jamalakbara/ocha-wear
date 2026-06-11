@@ -1,0 +1,30 @@
+{% comment %}
+  Ocha Wear type system — per docs/ocha-wear-design.md §3.
+  Loads Cormorant Garamond (display, mirrors the OC monogram serif),
+  DM Sans (body/UI) and Satisfy (script accent, decorative only).
+  Keeps the legacy --font-duma-* vars as aliases because template JSON
+  blocks and duma-* sections still reference them. Falls back to the
+  Shopify-library family if the request fails.
+{% endcomment %}
+
+{% # theme-check-disable RemoteAsset %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Satisfy&display=swap"
+>
+{% # theme-check-enable RemoteAsset %}
+
+{% style %}
+  :root {
+    --font-ocha-display: 'Cormorant Garamond', var(--font-heading--family);
+    --font-ocha-body: 'DM Sans', var(--font-body--family);
+    --font-ocha-accent: 'Satisfy', cursive;
+
+    /* Legacy aliases — consumed by duma-* sections and template JSON blocks */
+    --font-duma-display: var(--font-ocha-display);
+    --font-duma-section: var(--font-ocha-display);
+    --font-duma-ui: var(--font-ocha-body);
+  }
+{% endstyle %}

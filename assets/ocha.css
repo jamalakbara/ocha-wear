@@ -1,9 +1,59 @@
 /*
- * DUMA-style polish layered on top of Atelier.
+ * Ocha Wear design system layered on top of Atelier.
+ * Tokens and component specs per docs/ocha-wear-design.md.
  * Scoped narrowly so it can be turned off by removing the asset link.
  */
 
-/* ---------- 1. SALE nav item — red ----------
+/* ---------- 0. Ocha design tokens ---------- */
+:root {
+  /* Brand colors (logo-derived) */
+  --color-brand-olive: #768156;
+  --color-brand-olive-dark: #5e6844;
+  --color-brand-olive-light: #a0a87a;
+  --color-brand-olive-tint: #eef0e6;
+  --color-brand-cream: #eae4da;
+  --color-brand-cream-dark: #d4cbbd;
+
+  /* Core UI palette */
+  --color-bg-primary: #f7f4f0;
+  --color-bg-surface: #ffffff;
+  --color-text-primary: #2b2b2b;
+  --color-text-secondary: #6b6663;
+  --color-text-inverse: #eae4da;
+  --color-divider: #ddd7cf;
+  --color-overlay: rgba(43, 43, 43, 0.45);
+
+  /* Functional */
+  --color-success: #768156;
+  --color-error: #c97070;
+  --color-warning: #e8c97a;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Shadows */
+  --shadow-card: 0 2px 16px rgba(43, 43, 43, 0.08);
+  --shadow-card-hover: 0 8px 24px rgba(43, 43, 43, 0.14);
+
+  /* Motion */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-soft: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-soft: cubic-bezier(0.4, 0, 1, 1);
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-enter: 400ms;
+  --duration-hero: 600ms;
+
+  /* Legacy aliases consumed by older rules/sections */
+  --duma-text: var(--color-text-primary);
+  --duma-sale-red: var(--color-error);
+}
+
+/* ---------- 1. SALE nav item — warm red ----------
    High specificity (0,3,2) so it stays red even when the theme's
    hover-subdue rule (.menu-list .menu-list__link, 0,2,0) kicks in
    while another menu item is hovered. */
@@ -11,18 +61,70 @@
 .menu__link[href*="sale" i],
 nav.menu-list a.menu-list__link[href*="sale" i],
 nav.menu-list a.menu-list__item[href*="sale" i] {
-  color: var(--duma-sale-red, #c8232c);
+  color: var(--duma-sale-red, #c97070);
 }
 
-/* ---------- 2. Square corners everywhere ---------- */
-body,
-body * {
-  --style-border-radius-pills: 0;
-  --style-border-radius-inputs: 0;
-  --style-border-radius-buttons-primary: 0;
-  --style-border-radius-buttons-secondary: 0;
-  --style-border-radius-popover: 0;
-  --border-radius-sm: 0;
+/* ---------- 2. Global component spec ---------- */
+
+/* Buttons — DM Sans 700 12px uppercase, gentle press */
+.button:not(.button-unstyled) {
+  font-family: var(--font-ocha-body, var(--font-body--family));
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.button:not(.button-unstyled):active {
+  transform: scale(0.97);
+  transition: transform var(--duration-fast) var(--ease-smooth);
+}
+
+:is(.button, a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--color-brand-olive);
+  outline-offset: 3px;
+}
+
+/* Inputs — hairline divider border, olive focus ring */
+.field__input,
+.email-signup__input:not(.email-signup__input--underline),
+input[type='text'].field__input,
+textarea.text-area {
+  border: 1.5px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+}
+
+.field__input:focus,
+.email-signup__input:not(.email-signup__input--underline):focus,
+textarea.text-area:focus {
+  border-color: var(--color-brand-olive);
+  box-shadow: 0 0 0 3px rgba(118, 129, 86, 0.18);
+  outline: none;
+}
+
+/* Product cards — flat editorial, motion lives inside the image
+   (hover crossfade on PLP, photo zoom on collections). No shadow,
+   no lift — matches the collections index tile language. */
+product-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Badges — small radius */
+.product-badges__badge {
+  border-radius: var(--radius-sm);
+}
+
+/* Reduced motion — fabric stays still */
+@media (prefers-reduced-motion: reduce) {
+  .image--fade-in,
+  product-card .card-gallery slideshow-slide,
+  .button:not(.button-unstyled),
+  .collection-card__image .resource-image__image {
+    transition: none !important;
+  }
 }
 
 /* ---------- 3. Image fade-in helper ---------- */
@@ -64,24 +166,28 @@ product-card .card-gallery:not(:has(slideshow-slide[slide-index='1'])) slideshow
   min-height: 43px;
 }
 
-/* ---------- 6. Newsletter subscribe button — taupe ---------- */
+/* ---------- 6. Newsletter subscribe button — primary olive ---------- */
 .email-signup__button:not(.button-unstyled) {
   font-family: var(--font-duma-ui, var(--font-body--family));
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 footer .email-signup__button:not(.button-unstyled) {
-  background-color: #c9bfb5;
-  color: #5f3e22;
-  border-color: #c9bfb5;
-  letter-spacing: 0.2em;
-  padding: 14px 34px;
+  background-color: var(--color-brand-olive);
+  color: var(--color-text-inverse);
+  border-color: var(--color-brand-olive);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  padding: 13px 32px;
 }
 
 footer .email-signup__button:not(.button-unstyled):hover {
-  background-color: #b8ada0;
-  color: #5f3e22;
+  background-color: var(--color-brand-olive-dark);
+  border-color: var(--color-brand-olive-dark);
+  color: var(--color-text-inverse);
 }
 
 footer .email-signup__input--underline {
@@ -89,10 +195,10 @@ footer .email-signup__input--underline {
   letter-spacing: 0.04em;
 }
 
-/* ---------- 6d. Footer — DUMA reference layout ----------
-   Reference: 4 columns (newsletter wider), serif uppercase column
-   titles, 12px uppercase muted links, stacked underline input +
-   taupe SUBSCRIBE button, centered legal line. */
+/* ---------- 6d. Footer — 4-column layout ----------
+   4 columns (newsletter wider), Cormorant italic column titles,
+   12px uppercase muted links, stacked underline input + olive
+   SUBSCRIBE button, centered legal line. */
 
 @media screen and (min-width: 990px) {
   footer .footer-content {
@@ -101,15 +207,16 @@ footer .email-signup__input--underline {
   }
 }
 
-/* Column titles — serif, uppercase, muted */
+/* Column titles — Cormorant italic, sentence case */
 footer .menu__heading,
 footer .footer-content .text-block h6 {
   font-family: var(--font-duma-section, var(--font-subheading--family));
-  font-size: 16px;
+  font-style: italic;
+  font-size: 19px;
   font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #666;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -118,26 +225,26 @@ footer .menu:not(:has(.menu__heading--empty)) .details-content {
   margin-block-start: 26px;
 }
 
-/* Links — Work Sans 12px uppercase, brown on hover */
+/* Links — DM Sans 12px uppercase, olive on hover */
 footer .menu__item a {
   font-family: var(--font-duma-ui, var(--font-body--family));
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #666;
+  color: var(--color-text-secondary);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 footer .menu__item a:hover {
-  color: #543425;
+  color: var(--color-brand-olive-dark);
 }
 
 /* Newsletter description */
 footer .group-block .text-block p {
   font-size: 13px;
   line-height: 1.65;
-  color: #8c8c8c;
+  color: var(--color-text-secondary);
   max-width: 330px;
   margin: 0;
 }
@@ -154,57 +261,59 @@ footer .email-signup__input-group--underline {
 footer .email-signup__input-group--underline .email-signup__input--underline {
   width: 100%;
   padding: 10px 2px;
-  border-bottom: 1px solid #e3e3e3;
+  border-bottom: 1px solid var(--color-divider);
   font-size: 14px;
   transition: border-color 0.2s ease;
 }
 
 footer .email-signup__input-group--underline .email-signup__input--underline:focus {
-  border-color: #543425;
+  border-color: var(--color-brand-olive);
   outline: none;
 }
 
 footer .email-signup__input--underline::placeholder {
-  color: #b9b9b9;
+  color: var(--color-text-secondary);
 }
 
 footer .email-signup__input--underline + .email-signup__button--integrated.email-signup__button--text {
   align-self: flex-start;
   margin: 0;
-  padding: 14px 34px;
+  padding: 13px 32px;
 }
 
-/* Legal line — centered, near-black */
+/* Legal line — centered, soft black */
 footer .footer-content > .text-block p {
   font-family: var(--font-duma-ui, var(--font-body--family));
   font-size: 13px;
   letter-spacing: 0.12em;
-  color: #363636;
+  color: var(--color-text-primary);
   max-width: none;
 }
 
-/* ---------- 6b. Header logo wordmark — display serif ----------
+/* ---------- 6b. Header logo wordmark — Cormorant 600 ----------
    Applies when no logo image is uploaded and the store name renders as text.
    The block sets --font-family inline (body family), so override font-family
    directly rather than via the custom property.
 */
 .header-logo {
   font-family: var(--font-duma-display, var(--font-heading--family)) !important;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  font-size: 28px;
   text-transform: none;
 }
 
-/* ---------- 6c. Bottom banner CTA — white pill, dark text ---------- */
+/* ---------- 6c. Bottom banner CTA — primary olive button ---------- */
 #shopify-section-lifestyle_banner .button,
 #shopify-section-lifestyle_banner a.button {
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--duma-text, #454545);
+  background: var(--color-brand-olive);
+  color: var(--color-text-inverse);
   border: none;
+  border-radius: var(--radius-md);
   font-family: var(--font-duma-ui, var(--font-body--family));
   font-size: 12px;
-  letter-spacing: 0.18em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 16px 34px;
   margin-bottom: 48px;
@@ -212,24 +321,25 @@ footer .footer-content > .text-block p {
 }
 
 #shopify-section-lifestyle_banner .button:hover {
-  background: #fff;
+  background: var(--color-brand-olive-dark);
 }
 
-/* ---------- 7. Section headings — display serif look ---------- */
+/* ---------- 7. Section headings — Cormorant italic ---------- */
 .section-heading--duma,
 .product-list__heading,
 .featured-collection__heading {
   font-family: var(--font-duma-section, var(--font-subheading--family));
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: -0.02em;
   color: var(--color-foreground-heading);
 }
 
 /* ---------- 8. Homepage section gap ----------
    Sections stack full-bleed; the gap between them comes from the
-   "Homepage section gap" theme setting (DUMA Layout) via
-   --duma-section-gap. Sections with "custom spacing" enabled override
-   this with their own inline margins. */
+   "Homepage section gap" theme setting via --duma-section-gap.
+   Sections with "custom spacing" enabled override this with their
+   own inline margins. */
 body.template-index .section {
   margin-block: 0;
 }
@@ -239,13 +349,8 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 }
 
 /* ---------- 9. PDP — editorial 3-zone layout, pixel spec ----------
-   Reference: design bundle "ocha wear PDP.html".
-   Grid 90px rail / fluid gallery / 430px sticky meta, gap 34,
+   Grid 90px rail / fluid gallery / sticky meta, gap 34,
    max 1640px container with 46px side padding. */
-.template-product .product-information .product-details {
-  --color-foreground: #454545;
-  color: #454545;
-}
 
 /* Media : info = 50:50.
    No-rail products (single image): override the theme's
@@ -289,7 +394,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   }
 }
 
-/* Vendor — Bodoni 13px/600, Title — Bodoni 24px/600 tight */
+/* Vendor — 13px/600, Title — serif 24px/600 tight */
 .template-product .product-details :is(.text-block--vendor_PDPDuma, [class*="__vendor_PDPDuma"]) p {
   font-size: 13px;
   font-weight: 600;
@@ -301,18 +406,18 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   line-height: 1.18;
 }
 
-/* Price — Work Sans 18px muted; sale red + struck compare-at */
+/* Price — DM Sans 18px; warm-red sale + struck compare-at */
 .template-product .product-details product-price {
   font-size: 18px;
   line-height: 1.4;
 }
 
 .template-product .product-details product-price .price-item--sale {
-  color: #c8232c;
+  color: var(--color-error);
 }
 
 .template-product .product-details product-price .compare-at-price {
-  color: #b3b3b3;
+  color: var(--color-text-secondary);
   font-size: 16px;
   text-decoration: line-through;
 }
@@ -324,7 +429,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   font-size: 17px;
   font-weight: 400;
   letter-spacing: 0.01em;
-  color: #454545;
+  color: var(--color-text-primary);
   margin-block-end: 13px;
 }
 
@@ -347,20 +452,21 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   appearance: none;
   -webkit-appearance: none;
   width: 100%;
-  border: 1px solid #e3e3e3;
-  border-radius: 0;
-  background: #fff;
+  border: 1.5px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
   padding: 18px 20px;
   font-family: var(--font-duma-ui, var(--font-body--family));
   font-size: 16px;
-  color: #454545;
+  color: var(--color-text-primary);
   letter-spacing: 0.02em;
   cursor: pointer;
 }
 
 .template-product .product-details .variant-option__select:focus {
   outline: none;
-  border-color: #454545;
+  border-color: var(--color-brand-olive);
+  box-shadow: 0 0 0 3px rgba(118, 129, 86, 0.18);
 }
 
 .template-product .product-details .variant-option__select-wrapper .icon-caret {
@@ -371,7 +477,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   width: 14px;
   height: 14px;
   pointer-events: none;
-  color: #454545;
+  color: var(--color-text-primary);
 }
 
 /* Colour swatches — 30px circles, ring on active */
@@ -392,23 +498,27 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 }
 
 .template-product .product-details .quantity-selector {
-  border: 1px solid #e3e3e3;
-  border-radius: 0;
-  background: #fff;
+  border: 1.5px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
   box-shadow: none;
+  overflow: hidden;
+  /* base.css flex-basis (124px) is narrower than the 54+64+54 stepper, clipping the plus button */
+  flex: 0 0 auto;
+  width: max-content;
 }
 
 .template-product .product-details .quantity-selector .button {
   width: 54px;
   height: 56px;
   border-radius: 0;
-  color: #454545;
+  color: var(--color-text-primary);
   background: none;
   transition: background 0.2s ease;
 }
 
 .template-product .product-details .quantity-selector .button:hover {
-  background: #f6f4ef;
+  background: var(--color-brand-olive-tint);
 }
 
 .template-product .product-details .quantity-selector input {
@@ -417,7 +527,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   text-align: center;
   font-family: var(--font-duma-ui, var(--font-body--family));
   font-size: 17px;
-  color: #454545;
+  color: var(--color-text-primary);
   border: none;
   background: transparent;
 }
@@ -435,27 +545,31 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   gap: 30px;
 }
 
-/* Add to cart — outlined brown, fills on hover */
+/* Add to cart — primary olive, cream label */
 .template-product .product-details .add-to-cart-button {
   width: 100%;
   height: auto;
   min-height: 0;
-  border: 1px solid #5f3e22;
-  border-radius: 0;
-  background: #fff;
-  color: #5f3e22;
-  padding-block: 22px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-brand-olive);
+  color: var(--color-text-inverse);
+  padding-block: 18px;
   font-family: var(--font-duma-ui, var(--font-body--family));
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0.28em;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 .template-product .product-details .add-to-cart-button:hover:not(:disabled) {
-  background: #5f3e22;
-  color: #fff;
+  background: var(--color-brand-olive-dark);
+  color: var(--color-text-inverse);
+}
+
+.template-product .product-details .add-to-cart-button:active:not(:disabled) {
+  transform: scale(0.97);
 }
 
 .template-product .product-details .add-to-cart-button .add-to-cart-icon {
@@ -467,7 +581,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   display: none;
 }
 
-/* Wishlist link — centered uppercase, brown on hover */
+/* Wishlist link — centered uppercase, olive on hover */
 .template-product .product-details :is(.text-block--wishlist_PDPDuma, [class*="__wishlist_PDPDuma"]) p {
   font-size: 13px;
   cursor: pointer;
@@ -475,26 +589,27 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 }
 
 .template-product .product-details :is(.text-block--wishlist_PDPDuma, [class*="__wishlist_PDPDuma"]) p:hover {
-  color: #543425;
+  color: var(--color-brand-olive-dark);
 }
 
-/* Accordion summary — Bodoni 15px/600, taupe underline, 22px rows */
+/* Accordion summary — Cormorant italic, cream-dark underline, 22px rows */
 .template-product .product-details .accordion .details__header {
   font-family: var(--font-duma-section, var(--font-subheading--family));
-  font-size: 15px;
+  font-style: italic;
+  font-size: 17px;
   font-weight: 600;
-  text-transform: uppercase;
+  text-transform: none;
   text-decoration: underline;
   text-underline-offset: 5px;
-  text-decoration-color: #c9bfb5;
-  letter-spacing: 0.06em;
+  text-decoration-color: var(--color-brand-cream-dark);
+  letter-spacing: -0.01em;
   padding-block: 22px;
-  color: #454545;
+  color: var(--color-text-primary);
 }
 
 .template-product .product-details .accordion .details-content {
   font-family: var(--font-duma-ui, var(--font-body--family));
-  color: #454545;
+  color: var(--color-text-primary);
   font-size: 16px;
   line-height: 1.75;
   letter-spacing: 0.005em;
@@ -502,7 +617,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 }
 
 .template-product .product-details .accordion {
-  --color-border: #e3e3e3;
+  --color-border: var(--color-divider);
 }
 
 /* Em-dash bullets inside accordion lists */
@@ -524,7 +639,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   content: '—';
   position: absolute;
   left: 0;
-  color: #c9bfb5;
+  color: var(--color-brand-olive);
 }
 
 /* Share row */
@@ -539,17 +654,17 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   font-family: var(--font-duma-ui, var(--font-body--family));
   font-size: 14px;
   letter-spacing: 0.04em;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .template-product .product-details .product-share__link {
   display: inline-flex;
-  color: #666;
+  color: var(--color-text-secondary);
   transition: color 0.2s ease;
 }
 
 .template-product .product-details .product-share__link:hover {
-  color: #543425;
+  color: var(--color-brand-olive-dark);
 }
 
 .template-product .product-details .product-share__link svg {
@@ -581,8 +696,10 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   width: 100%;
   aspect-ratio: 3 / 4;
   padding: 0;
-  background: #f3f1ec;
+  background: var(--color-brand-olive-tint);
   border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
   cursor: pointer;
   transition: border-color 0.25s ease, opacity 0.25s ease;
   opacity: 0.78;
@@ -594,7 +711,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 }
 
 .product-thumb-rail__item.is-active {
-  border-color: #454545;
+  border-color: var(--color-brand-olive);
   opacity: 1;
 }
 
@@ -611,7 +728,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   display: grid;
   place-items: center;
   color: #fff;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(43, 43, 43, 0.25);
   pointer-events: none;
 }
 
@@ -633,34 +750,33 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 
 /* ---------- 10. PDP — recommendation carousels ----------
    "You may also like" and "Recently Viewed" both reuse the homepage
-   DUMA Our Picks section (DRY); on the PDP each gets a hairline top
+   Our Picks section (DRY); on the PDP each gets a hairline top
    border + 46px side insets. */
 .template-product .duma-picks {
   width: auto;
-  border-top: 1px solid #e3e3e3;
+  border-top: 1px solid var(--color-divider);
   margin: 36px 46px 0;
   padding-block: 54px 8px;
 }
 
-/* ---------- 11. PLP — collection page, pixel spec ----------
-   Reference: design bundle "ocha wear PLP.html".
-   Centered Bodoni title, horizontal filter/sort toolbar with 46px
-   side insets, full-bleed 3-column grid with 2px gutters, centered
-   serif card info, translucent badges, hover heart, infinite-scroll
-   "Please Wait.." loader + end-of-collection marker. */
+/* ---------- 11. PLP — collection page ----------
+   Cormorant italic title, horizontal filter/sort toolbar with 46px
+   side insets, 3-column grid, soft cards per Ocha product-card spec,
+   hover heart, infinite-scroll loader + end-of-collection marker. */
 
-/* Collection title — Bodoni 30px/500, .12em tracking */
+/* Collection title — Cormorant italic 34px */
 .template-collection :is(.text-block--title_PLPDuma, [class*="__title_PLPDuma"]) h1 {
   font-family: var(--font-duma-display, var(--font-heading--family));
-  font-size: 30px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #454545;
+  font-style: italic;
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
-/* Toolbar — Work Sans 12px uppercase, 46px side insets */
+/* Toolbar — DM Sans 12px uppercase, 46px side insets */
 @media screen and (min-width: 750px) {
   .template-collection .facets--horizontal {
     padding: 0 46px 26px;
@@ -682,18 +798,18 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #454545;
+  color: var(--color-text-primary);
   transition: color 0.2s ease;
 }
 
-/* No dimming of sibling toggles; brown on hover instead */
+/* No dimming of sibling toggles; olive on hover instead */
 .template-collection .facets__filters-wrapper:hover .facets__summary,
 .template-collection .facets__filters-wrapper:has(.facets__panel[open]) .facets__summary {
   opacity: 1;
 }
 
 .template-collection .facets--horizontal .facets__summary:hover {
-  color: #543425;
+  color: var(--color-brand-olive-dark);
 }
 
 .template-collection .facets__summary .icon-caret {
@@ -706,16 +822,16 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   font-family: var(--font-duma-ui, var(--font-body--family));
   font-size: 12px;
   letter-spacing: 0.1em;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
-/* Clear all — underlined brown */
+/* Clear all — underlined olive */
 .template-collection .facets__clear-all-link {
   font-family: var(--font-duma-ui, var(--font-body--family));
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #543425;
+  color: var(--color-brand-olive);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -726,9 +842,9 @@ body.template-index #MainContent .shopify-section + .shopify-section {
     top: calc(100% + 8px);
     min-width: 180px;
     padding: 10px 0;
-    border: 1px solid #e3e3e3;
-    border-radius: 0;
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--color-divider);
+    border-radius: var(--radius-md);
+    box-shadow: 0 14px 34px rgba(43, 43, 43, 0.1);
   }
 
   .template-collection .facets--horizontal .facets__inputs-wrapper {
@@ -746,7 +862,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 }
 
 .template-collection .facets__panel-content .facets__inputs-list-item:hover {
-  background: #f7f5f0;
+  background: var(--color-brand-olive-tint);
 }
 
 /* Checkbox option rows — 12px uppercase, 13px square box */
@@ -763,23 +879,23 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #666;
+  color: var(--color-text-secondary);
   line-height: 1.2;
   transition: color 0.15s ease;
 }
 
 .template-collection .facets__panel-content .facets__inputs-list-item:hover .checkbox__label-text {
-  color: #454545;
+  color: var(--color-text-primary);
 }
 
 .template-collection .facets__panel-content .checkbox .icon-checkmark {
-  border: 1px solid #c4bdb1;
-  border-radius: 0;
+  border: 1px solid var(--color-divider);
+  border-radius: 3px;
 }
 
 .template-collection .facets__panel-content .checkbox__input:checked + .checkbox__label .icon-checkmark {
-  background-color: #5f3e22;
-  border-color: #5f3e22;
+  background-color: var(--color-brand-olive);
+  border-color: var(--color-brand-olive);
 }
 
 /* Short-value filters (sizes) render as pills — restyle into rows */
@@ -811,7 +927,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .template-collection .facets__panel-content .facets__pill-label::before {
@@ -819,28 +935,29 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   flex: 0 0 auto;
   width: 13px;
   height: 13px;
-  border: 1px solid #c4bdb1;
-  background-color: #fff;
+  border: 1px solid var(--color-divider);
+  border-radius: 3px;
+  background-color: var(--color-bg-surface);
   background-position: center;
   background-repeat: no-repeat;
   background-size: 9px 9px;
 }
 
 .template-collection .facets__panel-content .facets__pill-input:checked + .facets__pill-label::before {
-  border-color: #5f3e22;
-  background-color: #5f3e22;
+  border-color: var(--color-brand-olive);
+  background-color: var(--color-brand-olive);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6.5 5 9.5 10 3' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
 }
 
 .template-collection .facets__panel-content .facets__pill-input:checked + .facets__pill-label {
-  color: #454545;
+  color: var(--color-text-primary);
 }
 
-/* Sort dropdown — right-anchored panel, brown active option */
+/* Sort dropdown — right-anchored panel, olive active option */
 .template-collection .sorting-filter__options {
-  border: 1px solid #e3e3e3;
-  border-radius: 0;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  box-shadow: 0 14px 34px rgba(43, 43, 43, 0.1);
   min-width: 180px;
 }
 
@@ -862,7 +979,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 }
 
 .template-collection .sorting-filter__option:hover {
-  background: #f7f5f0;
+  background: var(--color-brand-olive-tint);
   border-radius: 0;
 }
 
@@ -875,19 +992,26 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .template-collection .sorting-filter__input:checked + .sorting-filter__checkmark + .sorting-filter__label {
-  color: #543425;
+  color: var(--color-brand-olive);
   font-weight: 500;
 }
 
-/* Product grid — exactly 3 columns on desktop, 1 on small phones.
-   Specificity (0,3,0) to beat the section's repeat(auto-fill) rule. */
+/* Product grid — 3 columns tablet, 4 on desktop (design doc §4.2),
+   1 on small phones. Specificity (0,3,0) to beat the section's
+   repeat(auto-fill) rule. */
 @media screen and (min-width: 750px) {
   .template-collection .product-grid.product-grid--grid {
     --product-grid-columns-desktop: repeat(3, 1fr);
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .template-collection .product-grid.product-grid--grid {
+    --product-grid-columns-desktop: repeat(4, 1fr);
   }
 }
 
@@ -897,7 +1021,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   }
 }
 
-/* Card — centered info */
+/* Card — centered info, flat on page background */
 .template-collection .product-grid product-card {
   position: relative;
   text-align: center;
@@ -911,46 +1035,49 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 
 .template-collection .product-grid .product-badges__badge {
   background: rgba(255, 255, 255, 0.72);
-  color: #363636;
+  color: var(--color-text-primary);
   font-family: var(--font-duma-ui, var(--font-body--family));
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   padding: 5px 12px;
-  border-radius: 0;
+  border-radius: var(--radius-sm);
 }
 
-/* Sold out — grey text (scheme-5 = sold-out badge scheme) */
+/* Sold out — muted text (scheme-5 = sold-out badge scheme) */
 .template-collection .product-grid .product-badges__badge.color-scheme-5 {
-  color: #9a9a9a;
+  background: var(--color-divider);
+  color: var(--color-text-secondary);
 }
 
-/* Title — Bodoni 14px/500 uppercase */
+/* Title — DM Sans 500 14px (Ocha product-card spec) */
 .template-collection .product-grid :is(.text-block--card_title_PLPDuma, [class*="__card_title_PLPDuma"]) {
-  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-family: var(--font-duma-ui, var(--font-body--family));
   font-size: 14px;
   font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #454545;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--color-text-primary);
   margin-block-end: 11px;
 }
 
-/* Price — Work Sans 14px muted; sale red + struck compare-at */
+/* Price — DM Sans 700 15px; warm-red sale + struck compare-at */
 .template-collection .product-grid product-card .price {
   font-family: var(--font-duma-ui, var(--font-body--family));
-  font-size: 14px;
-  color: #666;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
 }
 
 .template-collection .product-grid product-card .price-item--sale.price {
-  color: #c8232c;
+  color: var(--color-error);
 }
 
 .template-collection .product-grid product-card .compare-at-price {
-  color: #b3b3b3;
+  color: var(--color-text-secondary);
   font-size: 13px;
+  font-weight: 400;
   text-decoration: line-through;
 }
 
@@ -973,11 +1100,11 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 1px solid #cfcabf;
+  border: 1px solid var(--color-divider);
 }
 
 .template-collection .product-grid product-card .variant-option__swatch:has(input:checked) {
-  outline: 1px solid #454545;
+  outline: 1px solid var(--color-brand-olive);
   outline-offset: 2px;
   border-radius: 50%;
 }
@@ -1021,36 +1148,37 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 .duma-card-heart svg {
   width: 19px;
   height: 19px;
-  stroke: #363636;
+  stroke: var(--color-text-primary);
   fill: none;
   stroke-width: 1.4;
 }
 
 .duma-card-heart.on svg {
-  fill: #363636;
+  fill: var(--color-brand-olive);
+  stroke: var(--color-brand-olive);
 }
 
 /* Infinite-scroll loader + end-of-collection marker */
 .duma-plp-loader {
   display: none;
   text-align: center;
-  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-family: var(--font-duma-ui, var(--font-body--family));
   font-weight: 500;
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #a8a29a;
+  color: var(--color-text-secondary);
   padding: 46px 0 30px;
 }
 
 .duma-plp-end {
   display: none;
   text-align: center;
-  font-family: var(--font-duma-display, var(--font-heading--family));
-  font-size: 13px;
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #c0bab0;
+  color: var(--color-text-secondary);
   padding: 40px 0 20px;
 }
 
@@ -1059,13 +1187,11 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   display: block;
 }
 
-/* ---------- 12. Collections index — pixel spec ----------
-   Reference: design bundle "ocha wear Collections.html".
-   Centered Bodoni "All Collections" title (96/70 whitespace band),
-   full-bleed 3-column grid with 3px gutters and 3px side insets,
-   4:5 tiles with bottom legibility scrim, brown hover tint, slow
-   image zoom, centered Bodoni label with growing underline, and a
-   hover-revealed "View Products" arrow CTA. */
+/* ---------- 12. Collections index ----------
+   Cormorant italic "All Collections" title (96/70 whitespace band),
+   3-column grid, 4:5 tiles with bottom legibility scrim, olive hover
+   tint, slow image zoom, centered italic label with growing underline,
+   and a hover-revealed "View Products" arrow CTA. */
 
 /* Page title band — 96px top / 70px bottom, centered */
 .template-list-collections :is(.text-block--title_CollListDuma, [class*="__title_CollListDuma"]) {
@@ -1074,28 +1200,30 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 
 .template-list-collections :is(.text-block--title_CollListDuma, [class*="__title_CollListDuma"]) h1 {
   font-family: var(--font-duma-display, var(--font-heading--family));
-  font-weight: 500;
-  font-size: 24px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #454545;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 32px;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
-/* Grid — 3px side insets to match the 3px gutters; 90px gap to footer */
+/* Grid — small side insets; 90px gap to footer */
 .template-list-collections .section-resource-list .resource-list--grid {
-  padding-inline: 3px;
+  padding-inline: 8px;
 }
 
 .template-list-collections .section-resource-list {
   padding-bottom: 90px;
 }
 
-/* Tile shell */
+/* Tile shell — soft radius per card spec */
 .template-list-collections .collection-card {
   position: relative;
   overflow: hidden;
-  background: #efece6;
+  border-radius: var(--radius-lg);
+  background: var(--color-brand-olive-tint);
 }
 
 /* Design has no card lift/scale — the photo zooms instead */
@@ -1125,19 +1253,19 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   transform: scale(1.06);
 }
 
-/* Brown tint fades in on hover */
+/* Olive tint fades in on hover */
 .template-list-collections .collection-card__inner::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background: rgba(84, 52, 37, 0);
+  background: rgba(118, 129, 86, 0);
   transition: background 0.45s ease;
 }
 
 .template-list-collections .collection-card:hover .collection-card__inner::before {
-  background: rgba(84, 52, 37, 0.3);
+  background: rgba(118, 129, 86, 0.3);
 }
 
 /* Legibility scrim from the bottom — always on, deepens on hover */
@@ -1152,9 +1280,9 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   pointer-events: none;
   background: linear-gradient(
     to top,
-    rgba(28, 18, 12, 0.62) 0%,
-    rgba(28, 18, 12, 0.24) 38%,
-    rgba(28, 18, 12, 0) 100%
+    rgba(43, 43, 43, 0.62) 0%,
+    rgba(43, 43, 43, 0.24) 38%,
+    rgba(43, 43, 43, 0) 100%
   );
   opacity: 0.9;
   transition: opacity 0.45s ease;
@@ -1174,14 +1302,15 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   text-align: center;
 }
 
-/* Collection label — Bodoni 25px/500, .13em, white, growing underline */
+/* Collection label — Cormorant italic 28px, white, growing underline */
 .template-list-collections :is(.text-block--card_title_CollDuma, [class*="__card_title_CollDuma"]) p {
   font-family: var(--font-duma-display, var(--font-heading--family));
-  font-weight: 500;
-  font-size: 25px;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 28px;
   line-height: 1.1;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  text-transform: none;
   color: #fff;
   text-shadow: 0 1px 16px rgba(0, 0, 0, 0.28);
   margin: 0;
@@ -1249,7 +1378,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   }
 
   .template-list-collections :is(.text-block--card_title_CollDuma, [class*="__card_title_CollDuma"]) p {
-    font-size: 21px;
+    font-size: 23px;
   }
 }
 
@@ -1257,7 +1386,7 @@ body.template-index #MainContent .shopify-section + .shopify-section {
 @media screen and (max-width: 749px) {
   .template-list-collections .section-resource-list .resource-list--grid {
     grid-template-columns: repeat(2, 1fr);
-    --resource-list-mobile-gap-max: 3px;
+    --resource-list-mobile-gap-max: 8px;
   }
 }
 
@@ -1265,4 +1394,232 @@ body.template-index #MainContent .shopify-section + .shopify-section {
   .template-list-collections .section-resource-list .resource-list--grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ---------- 13. Cart / Bag page ---------- */
+.template-cart .cart-page__title h1,
+.template-cart .cart-page__title .h2 {
+  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 36px);
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+/* Line items — warm hairline dividers */
+.cart-items--dividers .cart-items__table-row,
+.cart-items__table-row {
+  border-color: var(--color-divider);
+}
+
+.cart-items__title {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-weight: 500;
+}
+
+.cart-items__price {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-weight: 700;
+}
+
+.cart-items__variant,
+.cart-items__property {
+  color: var(--color-text-secondary);
+}
+
+/* Summary — white card, soft radius, settling shadow */
+.template-cart .cart-page__summary {
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+}
+
+.cart-totals__total-label,
+.cart-totals__total-value {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-weight: 700;
+}
+
+.cart-totals__tax-note {
+  color: var(--color-text-secondary);
+}
+
+/* ---------- 14. Search page ---------- */
+.search-page__header {
+  text-align: center;
+  padding-block: 48px 24px;
+}
+
+.search-page__header h1,
+.search-page__header .h2 {
+  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+.search-page__header input[type='search'],
+.search-page__header .search__input {
+  border: 1.5px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 16px;
+  padding: 14px 18px;
+}
+
+.search-page__header input[type='search']:focus,
+.search-page__header .search__input:focus {
+  border-color: var(--color-brand-olive);
+  box-shadow: 0 0 0 3px rgba(118, 129, 86, 0.18);
+  outline: none;
+}
+
+/* Results grid mirrors the PLP card treatment */
+@media screen and (min-width: 750px) {
+  .template-search .product-grid.product-grid--grid {
+    --product-grid-columns-desktop: repeat(3, 1fr);
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .template-search .product-grid.product-grid--grid {
+    --product-grid-columns-desktop: repeat(4, 1fr);
+  }
+}
+
+.template-search .product-grid product-card {
+  position: relative;
+  text-align: center;
+}
+
+.template-search .product-grid product-card .price {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.template-search .product-grid product-card .price-item--sale.price {
+  color: var(--color-error);
+}
+
+.template-search .product-grid product-card .compare-at-price {
+  color: var(--color-text-secondary);
+  font-weight: 400;
+  text-decoration: line-through;
+}
+
+.template-search .product-grid .product-badges__badge {
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--color-text-primary);
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- 15. Blog + article ---------- */
+.template-blog .blog-post-item h2,
+.template-blog .blog-post-item h3,
+.template-blog .blog-post-item .h3,
+.editorial-blog__grid h2,
+.editorial-blog__grid h3 {
+  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+.template-blog .blog-post-item img,
+.editorial-blog__grid img {
+  border-radius: var(--radius-lg);
+}
+
+/* Article body — readable measure, generous leading */
+.template-article .rte,
+.template-article .text-block p {
+  max-width: 65ch;
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.template-article h1,
+.template-article .h1 {
+  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+.blog-post-comment {
+  border-block-end: 1px solid var(--color-divider);
+  padding-block: 18px;
+}
+
+.blog-post-comment__author-name {
+  font-family: var(--font-duma-ui, var(--font-body--family));
+  font-weight: 500;
+}
+
+.blog-post-comment__date {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+/* ---------- 16. 404 ---------- */
+.template-404 h1,
+.template-404 .h1,
+.template-404 h2 {
+  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+/* ---------- 17. Static pages + contact ---------- */
+.template-page h1,
+.template-page .h1 {
+  font-family: var(--font-duma-display, var(--font-heading--family));
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+.template-page .rte {
+  max-width: 65ch;
+  line-height: 1.6;
+}
+
+/* ---------- 18. Password page ---------- */
+.password-main-content h1,
+.password-main-content .h1,
+.password-main-content h2 {
+  font-family: var(--font-ocha-display, var(--font-heading--family));
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+.password-dialog {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-divider);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* ---------- 19. Gift card ---------- */
+.gift-card__image,
+.gift-card__qr-code img {
+  border-radius: var(--radius-lg);
 }
